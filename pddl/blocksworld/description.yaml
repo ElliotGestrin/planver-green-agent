@@ -1,0 +1,47 @@
+Types:
+- object
+Predicates:
+  (clear ?x - object): Object {x} is clear
+  (on-table ?x - object): Object {x} is on the table
+  (arm-empty): The arm is empty
+  (holding ?x - object): Object {x} is held
+  (on ?x - object ?y - object): Object {x} is on object {y}
+Actions:
+  (pickup ?ob - object): Pickup object {ob}. Requires that object {ob} is clear, on the table, and the arm is empty. Causes object {ob} to be held, object {ob} to no longer be clear, object {ob} to no longer be on the table, and the arm to be not empty.
+  (putdown ?ob - object): Put down object {ob}. Requires that {ob} is held. Causes {ob} to be clear, the arm to be empty, {ob} to be on the table, and {ob} to no longer be held.
+  (stack ?ob - object ?underob - object): Stack block {b1} on block {b2}. Requires that {b1} is being held and block {b2} is clear. Afterward, {b1} is on {b2}, {b1} is clear and no longer held, {b2} is not clear, and the arm is empty.
+  (unstack ?ob - object ?underob - object): Unstack block {b1} from block {b2}. Requires that {b1} is on {b2}, {b1} is clear, and the arm is empty. Causes {b1} to be held, {b2} to become clear, {b1} to no longer be on {b2}, {b1} to become not clear, and the arm to no longer be empty.
+Problems:
+  easy:
+  - p01.pddl
+  - p18.pddl
+  - p02.pddl
+  - p19.pddl
+  - p03.pddl
+  - p20.pddl
+  - p04.pddl
+  - p21.pddl
+  - p05.pddl
+  - p06.pddl
+  medium:
+  - p22.pddl
+  - p07.pddl
+  - p23.pddl
+  - p08.pddl
+  - p24.pddl
+  - p09.pddl
+  - p10.pddl
+  - p25.pddl
+  - p11.pddl
+  - p26.pddl
+  hard:
+  - p12.pddl
+  - p27.pddl
+  - p13.pddl
+  - p14.pddl
+  - p28.pddl
+  - p15.pddl
+  - p29.pddl
+  - p16.pddl
+  - p30.pddl
+  - p17.pddl

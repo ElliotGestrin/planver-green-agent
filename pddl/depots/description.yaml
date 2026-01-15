@@ -1,0 +1,57 @@
+Types:
+- place
+- locatable
+- depot
+- distributor
+- truck
+- hoist
+- surface
+- pallet
+- crate
+Predicates:
+  (at ?x - locatable ?y - place): Locatable {x} is at place {y}
+  (on ?x - crate ?y - surface): Crate {x} is on Surface {y}
+  (in ?x - crate ?y - truck): Crate {x} is in Truck {y}
+  (lifting ?x - hoist ?y - crate): Hoist {x} lifts Crate {y}.
+  (available ?x - hoist): Hoist {x} is available
+  (clear ?x - surface): Surface {x} is clear
+Actions:
+  (drive ?x - truck ?y - place ?z - place): Drive truck {x} from place {y} to place {z}. Requires that {x} is at {y}. Causes {x} to no longer be at {y} and to be at {z}.
+  (lift ?x - hoist ?y - crate ?z - surface ?p - place): Lift crate {b1} with hoist {b2} from surface {b3} to place {b4}. Requires that hoist {b2} is at place {b4} and available, that crate {b1} is at place {b4} and on surface {b3}, and that surface {b3} is clear. After execution, crate {b1} is no longer at place {b4} and is being lifted by hoist {b2}; hoist {b2} becomes unavailable and surface {b3} becomes clear; crate {b1} is no longer on surface {b3}.
+  (drop ?x - hoist ?y - crate ?z - surface ?p - place): Drop the hoist block {b1} carrying crate {b2} from surface {b3} to place {b4}. Requires block {b1} to be at place {b4}, crate {b2} to be at place {b4}, crate {b2} to be clear, and block {b1} to be lifting crate {b2}. Causes block {b1} to become available, lifting{b1, b2} to be false, crate {b2} to be at place {b4} (and not clear), and crate {b2} to sit on surface {b3} with block {b1} now clear.
+  (load ?x - hoist ?y - crate ?z - truck ?p - place): 'Load crate {c1} from place {p1} into truck {t1} using hoist {h1}. Requires that {h1} (hoist) and {c1} (crate) are at place {p1}, and that {h1} is lifting {c1}. Effects: {h1} stops lifting {c1}, {c1} is in {t1}, and {h1} becomes available.'
+  (unload ?x - hoist ?y - crate ?z - truck ?p - place): 'Unload crate {c1} from hoist {h1} at place {p1} using truck {t1}. Preconditions: hoist {h1} is available; crate {c1} and hoist {h1} are at place {p1}; crate {c1} is in hoist {h1}. Effects: crate {c1} is no longer in hoist {h1}; hoist {h1} becomes unavailable; lifting({h1}, {c1}) becomes true.'
+Problems:
+  easy:
+  - p01.pddl
+  - p02.pddl
+  - p03.pddl
+  - p22.pddl
+  - p23.pddl
+  - p04.pddl
+  - p13.pddl
+  - p24.pddl
+  - p14.pddl
+  - p05.pddl
+  medium:
+  - p15.pddl
+  - p25.pddl
+  - p16.pddl
+  - p06.pddl
+  - p17.pddl
+  - p26.pddl
+  - p18.pddl
+  - p07.pddl
+  - p27.pddl
+  - p19.pddl
+  hard:
+  - p08.pddl
+  - p28.pddl
+  - p20.pddl
+  - p29.pddl
+  - p09.pddl
+  - p21.pddl
+  - p30.pddl
+  - p10.pddl
+  - p11.pddl
+  - p12.pddl

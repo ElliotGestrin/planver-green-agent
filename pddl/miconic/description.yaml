@@ -1,0 +1,51 @@
+Types:
+- passenger
+- floor
+Predicates:
+  (origin ?person - passenger ?floor - floor): Passenger {person} originates from floor {floor}
+  (destin ?person - passenger ?floor - floor): Passenger {person} has destination Floor {floor}
+  (above ?floor1 - floor ?floor2 - floor): Floor {floor1} is above Floor {floor2}
+  (boarded ?person - passenger): Passenger {person} has boarded
+  (not-boarded ?person - passenger): Passenger {x} is not boarded
+  (served ?person - passenger): Passenger {person} has been served
+  (not-served ?person - passenger): Passenger {person} has not been served
+  (lift-at ?floor - floor): The lift is at Floor {floor}.
+Actions:
+  (board ?f - floor ?p - passenger): Board passenger {p} on floor {f}. Requires that floor {f} has the lift (lift-at({f})) and passenger {p} is at floor {f} (origin({p}, {f})). After this action, passenger {p} is boarded (boarded({p}) = true).
+  (depart ?f - floor ?p - passenger): Depart passenger {p} from floor {f}. Requires that the lift is at floor {f}, the destination of {p} is floor {f}, and {p} is boarded. After execution, boarded({p}) becomes false and served({p}) becomes true.
+  (up ?f1 - floor ?f2 - floor): Move the lift from floor {f1} to floor {f2}. Requires that floor {f1} has the lift and is above floor {f2}. After the move, floor {f2} has the lift and floor {f1} no longer has the lift.
+  (down ?f1 - floor ?f2 - floor): Lower the lift from floor {f1} to floor {f2}. Requires that floor {f1} has the lift (lift-at({f1})) and floor {f2} is above floor {f1}. Causes lift-at({f2}) to become true and lift-at({f1}) to become false.
+Problems:
+  easy:
+  - p01.pddl
+  - p02.pddl
+  - p03.pddl
+  - p04.pddl
+  - p05.pddl
+  - p06.pddl
+  - p07.pddl
+  - p08.pddl
+  - p09.pddl
+  - p10.pddl
+  medium:
+  - p11.pddl
+  - p12.pddl
+  - p13.pddl
+  - p14.pddl
+  - p15.pddl
+  - p16.pddl
+  - p17.pddl
+  - p18.pddl
+  - p19.pddl
+  - p20.pddl
+  hard:
+  - p21.pddl
+  - p22.pddl
+  - p23.pddl
+  - p24.pddl
+  - p25.pddl
+  - p26.pddl
+  - p27.pddl
+  - p28.pddl
+  - p29.pddl
+  - p30.pddl

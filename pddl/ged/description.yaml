@@ -1,0 +1,85 @@
+Types:
+- object
+Predicates:
+  (duplicate ?x - object ?y - object): Object {x} is a duplicate of Object {y}
+  (swappable ?x - object ?y - object): Object {x} is swappable with Object {y}
+  (cw ?x - object ?y - object): Object {x} is related to Object {y}
+  (free ?x - object): Object {x} is free
+  (gone ?x - object): Object {x} is gone
+  (present ?x - object): Object {x} is present.
+  (normal ?x - object): Object {x} is normal
+  (inverted ?x - object): Object {x} is inverted
+  (idle): The system is idle
+  (cutting): The cutting predicate is true
+  (have-cut): The cut has been made
+  (splicing): Block {x} is spliced with block {y}
+  (splice-next ?x - object): Object {x} is the next to be spliced
+  (splicing-last): The splicing-last predicate is true.
+  (inverse-splicing): The inverse-splicing relation
+  (inverse-splice-next ?x - object): Object {x} is in the inverse-splice-next relation
+  (inverse-splicing-last): Item {x} is the last element produced by inverse splicing.
+  (finished): The task is finished.
+  (cut-point-1 ?x - object): Object {x} has a cut point
+  (cut-point-2 ?x - object): Object {x} is a cut-point-2
+  (last-cut-point ?x - object): Object {x} has the last cut point.
+  (splice-point-1 ?x - object): Object {x} is a splice point.
+  (splice-point-2 ?x - object): Object {x} is a splice point of type 2
+  (s-first ?x - object): Object {x} is the first
+  (s-next ?x - object ?y - object): Object {x} is next to object {y}
+  (s-last ?x - object): Object {x} is the last
+Actions:
+  (begin-cut ?x - object ?y - object): Begin cutting block {b1} with block {b2}. Requires that {b1} and {b2} are different blocks, the system is idle, and cw({b1},{b2}) holds. Causes the system to no longer be idle and to be cutting, makes cw({b1},{b2}) false, sets cut-point-1({b1}) and last-cut-point({b1}) to true, and marks s-first({b2}) and s-last({b2}) as true.
+  (continue-cut ?x - object ?y - object): Continue-cut block {b1} with block {b2}. Requires that {b1} ≠ {b2}, {b1} is cutting, and s-last({b1}) and cw({b1}, {b2}) hold. Causes cw({b1}, {b2}) to become false, s-last({b1}) to become false, s-next({b1}, {b2}) to become true, and s-last({b2}) to become true.
+  (end-cut-1 ?x - object ?y - object): 'End-cut-1: block {b1} and block {b2}. Requires that {b1} ≠ {b2}, cutting is active, {b1} is the last segment, and {b1} is connected with {b2}. Causes the connection between {b1} and {b2} to be removed (cw({b1},{b2}) becomes false) and marks {b2} as a cut point-2 (cut-point-2({b2}) becomes true).'
+  (end-cut-2 ?x - object ?y - object): End-cut-2 between block {b1} and block {b2}. Requires that {b1} is a cut-point-1 and {b2} is a cut-point-2, and that cutting is currently true. Causes cutting to be false, cut-point-1({b1}) to be false, cut-point-2({b2}) to be false, have-cut to be true, and cw({b1},{b2}) to be true.
+  (begin-transpose-splice ?x - object ?y - object): Begin-transpose-splice on block {b1} and block {b2} (where {b1} and {b2} are distinct blocks) performs a splice operation once there is a cut available and {b1} is connected to {b2}. Requires that {b1} ≠ {b2}, there is have-cut, and cw({b1}, {b2}) holds. Causes have-cut to become false, cw({b1}, {b2}) to become false, splicing to be true, and both splice-point-1({b1}) and splice-point-2({b2}) to be true.
+  (continue-splice-1 ?x - object ?y - object): Continue splice between block {x} and block {y}. Requires that splicing is active, block {x} is the first segment, and block {x} is followed by block {y}. Causes block {x} to lose its first/next relations (s-first({x}) := false, s-next({x}, {y}) := false) and splicing to be false, makes block {y} the first segment (s-first({y}) := true), and sets splice-next({x}) := true.
+  (continue-splice-2 ?x - object ?y - object): Continue splicing block {x} into block {y}. Requires that {x} is the next spliceable piece (splice-next({x})) and {y} is a splice point-1 (splice-point-1({y})). After execution, splice-point-1({y}) becomes false, splice-next({x}) becomes false, cw({y}, {x}) becomes true, splice-point-1({x}) becomes true, and splicing becomes true.
+  (end-splice-1 ?x - object ?y - object): End-splice-1 of block {x} with block {y}. Requires that a splicing operation is active, {y} is a splice point, and block {x} is both the first and last segment of the splice. After execution, splicing is deactivated, {x} is no longer the first or last segment and its splice-point is cleared, splicing-last becomes true, a connection from {y} to {x} is established, and the splice-point for {x} is set.
+  (end-splice-2 ?x - object ?y - object): End-splice-2 between block {b1} and block {b2} completes the splice operation, updating the splice status and connection. Requires that splicing-last is true, splice-point-1({b1}) is true, and splice-point-2({b2}) is true. After execution, splicing-last becomes false, splice-point-1({b1}) becomes false, splice-point-2({b2}) becomes false, finished becomes true, and cw({b1}, {b2}) becomes true.
+  (begin-transverse-splice ?x - object ?y - object): Transverse splice of block {x} with block {y}. Requires that block {x} and block {y} are different, the cut is present on {x}, and {x} is clockwise to {y}. After execution, have-cut on {x} and the cw({x}, {y}) relation are removed, inverse-splicing becomes true, and {x} is marked as splice-point-1 while {y} is marked as splice-point-2.
+  (begin-inverse-splice ?x - object ?y - object): Inverse-splice on block {b1} with block {b2}. Requires that {b1} and {b2} are distinct blocks, {b1} has been cut (have-cut), {b1} is clockwise to {b2} (cw({b1},{b2})), and {b1} has the last cut point. Causes have-cut to become false, cw({b1},{b2}) to become false, inverse-splicing to become true, splice-point-1({b1}) to become true, and splice-point-2({b2}) to become true.
+  (begin-inverse-splice-special-case ?x - object): Begin inverse-splice on block {x}. Requires that {x} has a cut, the cw relation holds for {x} with itself, and {x} has a last cut point. After execution, {x} is no longer cut, cw({x}, {x}) is false, inverse-splicing becomes true, and both splice-point-1({x}) and splice-point-2({x}) are set to true.
+  (continue-inverse-splice-1a ?x - object ?y - object): This action continues an inverse splice between block {x} and block {y} (object {x} and object {y}). Requires that inverse-splicing is active, {x} is normal, {x} is the last element, and {y} is the next element after {x}. Causes {x} to no longer be the last, {y} to no longer be the next after {x}, {x} to no longer be normal, {y} to become the last, inverse-splicing to be false, inverse-splice-next({x}) to be true, and inverted({x}) to be true.
+  (continue-inverse-splice-1b ?x - object ?y - object): 'The action continues an inverse splice between object {x} and object {y} while the system is in inverse-splicing and {x} is inverted and last, with {y} immediately following {x}. Requires: inverse-splicing is active, {x} is inverted and s-last({x}) is true, and s-next({y}, {x}) is true. Effects: s-last({x}) becomes false, s-next({y}, {x}) becomes false, inverted({x}) becomes false, s-last({y}) becomes true, inverse-splicing becomes false, inverse-splice-next({x}) becomes true, and normal({x}) becomes true.'
+  (continue-inverse-splice-2 ?x - object ?y - object): Continue inverse-splice with block {x} and block {y}. Requires that inverse-splice-next({x}) and splice-point-1({y}) hold. After execution, inverse-splice-next({x}) and splice-point-1({y}) become false, inverse-splicing becomes true, cw({y}, {x}) becomes true, and splice-point-1({x}) becomes true.
+  (end-inverse-splice-1a ?x - object ?y - object): 'End inverse splice between block {b1} and block {b2}. Preconditions: {b1} is a normal block and is both the first and last in its splice, {b2} is a splice-point-1, and inverse-splicing is active. Effects: inverse-splicing becomes false and inverse-splicing-last becomes true; splice-point-1({b2}) becomes false and splice-point-1({b1}) becomes true; s-first({b1}) and s-last({b1}) become false; normal({b1}) becomes false; cw({b2}, {b1}) becomes true; and inverted({b1}) becomes true.'
+  (end-inverse-splice-1b ?x - object ?y - object): 'End-inverse-splice-1b between block {x} and block {y} completes the inverse splice when {x} is both the first and last of its sequence, {y} has its splice-point-1 valid, and the system is currently in an inverse-splicing state. Requires: inverse-splicing is true; inverted({x}) is true; splice-point-1({y}) is true; {x} is the first and last in its sequence. Effects: inverse-splicing becomes false and inverse-splicing-last becomes true; splice-point-1({y}) becomes false; s-first({x}) and s-last({x}) become false; inverted({x}) becomes false; cw({y}, {x}) becomes true; splice-point-1({x}) becomes true; normal({x}) becomes true.'
+  (end-inverse-splice-2 ?x - object ?y - object): 'End-inverse-splice-2 completes the splice between block {x} and block {y}. Preconditions: inverse-splicing-last holds and block {x} is at splice-point-1 and block {y} is at splice-point-2. Effects: inverse-splicing-last becomes false, splice-point-1({x}) becomes false, splice-point-2({y}) becomes false, finished becomes true, and cw({x},{y}) becomes true.'
+  (invert-single-gene-a ?x - object): Invert single-gene {x}. Requires that the system is idle and gene {x} is normal. Causes gene {x} to become not normal and inverted (normal({x}) := false, inverted({x}) := true).
+  (invert-single-gene-b ?x - object): Invert single gene {x} (gene {x}) from inverted to normal. Requires that the system is idle and {x} is inverted. After execution, {x} is no longer inverted and {x} is normal.
+  (reset-1 ?x - object): Reset-1 for object {x}. Requires that finished is true and last-cut-point({x}) is true. After execution, last-cut-point({x}) becomes false, finished becomes false, and idle becomes true.
+Problems:
+  easy:
+  - p01.pddl
+  - p02.pddl
+  - p03.pddl
+  - p04.pddl
+  - p05.pddl
+  - p20.pddl
+  - p21.pddl
+  - p06.pddl
+  - p07.pddl
+  - p26.pddl
+  medium:
+  - p08.pddl
+  - p09.pddl
+  - p10.pddl
+  - p11.pddl
+  - p12.pddl
+  - p27.pddl
+  - p13.pddl
+  - p14.pddl
+  - p15.pddl
+  - p16.pddl
+  hard:
+  - p17.pddl
+  - p22.pddl
+  - p23.pddl
+  - p28.pddl
+  - p29.pddl
+  - p30.pddl
+  - p18.pddl
+  - p19.pddl
+  - p24.pddl
+  - p25.pddl

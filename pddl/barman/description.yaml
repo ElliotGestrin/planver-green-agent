@@ -1,0 +1,79 @@
+Types:
+- hand
+- level
+- beverage
+- dispenser
+- container
+- ingredient
+- cocktail
+- shot
+- shaker
+Predicates:
+  (ontable ?c - container): Container {c} is on the table
+  (holding ?h - hand ?c - container): Hand {h} holds Container {c}
+  (handempty ?h - hand): The hand {h} is empty
+  (empty ?c - container): Container {c} is empty
+  (contains ?c - container ?b - beverage): Container {c} contains Beverage {b}
+  (clean ?c - container): Container {c} is clean
+  (used ?c - container ?b - beverage): Container {x} is used with beverage {y}
+  (dispenses ?d - dispenser ?i - ingredient): Dispenser {d} dispenses Ingredient {i}
+  (shaker-empty-level ?s - shaker ?l - level): Shaker {s} has empty level {l}
+  (shaker-level ?s - shaker ?l - level): Shaker {s} is at level {l}
+  (next ?l1 - level ?l2 - level): Level {l1} is next to Level {l2}
+  (unshaked ?s - shaker): Shaker {s} is unshaken
+  (shaked ?s - shaker): Shaker {s} is shaked
+  (cocktail-part1 ?c - cocktail ?i - ingredient): Cocktail {c} includes Ingredient {i}
+  (cocktail-part2 ?c - cocktail ?i - ingredient): Cocktail {c} contains Ingredient {i}
+Actions:
+  (grasp ?h - hand ?c - container): Grasp container {c} with hand {h}. Requires that hand {h} is empty and container {c} is on the table. Causes container {c} to no longer be on the table, hand {h} to no longer be empty, and holding({h}, {c}) to become true, increasing total-cost by 1.
+  (leave ?h - hand ?c - container): Leave hand {h} that is holding container {c} on the table. Requires that hand {h} is holding container {c}. After the action, hand {h} becomes empty, container {c} is on the table, and total-cost increases by 1.
+  (fill-shot ?s - shot ?i - ingredient ?h1 - hand ?h2 - hand ?d - dispenser): 'Fills the shot {s} (shot {s}) with ingredient {i} from dispenser {d} using hands {h1} and {h2}.
+
+
+    Requires that hand {h1} holds shot {s}, hand {h2} is empty, dispenser {d} dispenses ingredient {i}, and shot {s} is empty and clean.
+
+
+    After the action, shot {s} is not empty, contains {i}, and is not clean; used({s},{i}) is true, and total-cost increases by 10.'
+  (refill-shot ?s - shot ?i - ingredient ?h1 - hand ?h2 - hand ?d - dispenser): Refill shot {s} (shot {s}) with ingredient {i} from dispenser {d} using hand {h1}, while hand {h2} is empty. Requires that {h1} holds {s}, {h2} is empty, {d} dispenses {i}, {s} is empty, and {s} has used {i}. Causes {s} to contain {i} and become non-empty, and increases total-cost by 10.
+  (empty-shot ?h - hand ?p - shot ?b - beverage): Empty-shot by hand {h} removing beverage {b} from shot {p}. Requires that hand {h} holds shot {p} and shot {p} contains beverage {b}. After execution, shot {p} no longer contains beverage {b}, shot {p} becomes empty, and total-cost increases by 1.
+  (clean-shot ?s - shot ?b - beverage ?h1 - hand ?h2 - hand): 'Clean-shot {s} using beverage {b} with hand {h1} while hand {h2} is empty. Preconditions: hand {h1} holds shot {s}, hand {h2} is empty, shot {s} is empty, and used({s},{b}) is true. Effects: used({s},{b}) becomes false, clean({s}) becomes true, and total-cost increases by 1.'
+  (pour-shot-to-clean-shaker ?s - shot ?i - ingredient ?d - shaker ?h1 - hand ?l - level ?l1 - level): 'Pour the contents of shot {s} (ingredient {i}) into shaker {d} using hand {h1}, moving from level {l} to level {l1}. Requires that hand {h1} holds {s}, {s} contains {i}, shaker {d} is empty and clean, and shaker {d} is at level {l} with the next level {l1}. Effects: {s} no longer contains {i} and is empty; {d} contains {i}, is not empty, and is unshaken; shaker {d} is no longer clean and moves to level {l1}; total-cost += 1.'
+  (pour-shot-to-used-shaker ?s - shot ?i - ingredient ?d - shaker ?h1 - hand ?l - level ?l1 - level): 'Pour the shot {s} from hand {h1} into shaker {d}, transferring ingredient {i} into {d}. Preconditions: {h1} holds {s}, {s} contains {i}, shaker {d} is unshaken and at level {l}, and {l1} is the next level after {l}. Effects: {s} no longer contains {i} and is empty, {d} contains {i}, shaker {d} moves from level {l} to level {l1}, and total-cost increases by 1.'
+  (empty-shaker ?h - hand ?s - shaker ?b - cocktail ?l - level ?l1 - level): 'Empty-shaker action: The hand {h} holds the shaker {s} containing cocktail {b}, which has been shaken and has levels {l} and {l1}. Requires that {h} holds {s}, {s} contains {b}, {s} has been shaken, and shaker-level({s},{l}) and shaker-empty-level({s},{l1}). After execution, {s} is no longer shaken, shaker-level({s},{l}) becomes false, shaker-level({s},{l1}) becomes true, {s} no longer contains {b}, {s} is empty, and total-cost increases by 1.'
+  (clean-shaker ?h1 - hand ?h2 - hand ?s - shaker): 'Clean shaker {s} using hands {h1} and {h2}. Preconditions: {h1} holds {s}, {h2} is empty, and shaker {s} is empty. Effects: shaker {s} becomes clean and total-cost increases by 1.'
+  (shake ?b - cocktail ?d1 - ingredient ?d2 - ingredient ?s - shaker ?h1 - hand ?h2 - hand): Shakes the cocktail {b} by mixing ingredient {d1} and ingredient {d2} in shaker {s} using hands {h1} and {h2}. Requires that hand {h1} holds shaker {s}, hand {h2} is empty, shaker {s} contains {d1} and {d2}, cocktail {b} has parts {d1} and {d2}, and shaker {s} is unshaken. After the action, {d1} and {d2} are no longer in {s}, {s} contains {b}, {s} is marked as shaken, and the total cost increases by 1.
+  (pour-shaker-to-shot ?b - beverage ?d - shot ?h - hand ?s - shaker ?l - level ?l1 - level): 'Pour beverage {b} from shaker {s} into shot {d} using hand {h}, moving from level {l} to level {l1}. Preconditions: you are holding shaker {s} with hand {h}, the shaker has been shaken, shot {d} is empty and clean, shaker {s} contains beverage {b}, shaker-level({s}, {l}), and next({l1}, {l}). Effects: shot {d} becomes non-empty and no longer clean, contains beverage {b}, and is marked used with {b}; shaker {s} moves to level {l1} (and is no longer at level {l}); total-cost increases by 1.'
+Problems:
+  easy:
+  - p20.pddl
+  - p01.pddl
+  - p02.pddl
+  - p21.pddl
+  - p03.pddl
+  - p22.pddl
+  - p04.pddl
+  - p05.pddl
+  - p12.pddl
+  - p23.pddl
+  medium:
+  - p13.pddl
+  - p06.pddl
+  - p24.pddl
+  - p07.pddl
+  - p14.pddl
+  - p08.pddl
+  - p15.pddl
+  - p09.pddl
+  - p16.pddl
+  - p25.pddl
+  hard:
+  - p10.pddl
+  - p17.pddl
+  - p26.pddl
+  - p11.pddl
+  - p18.pddl
+  - p27.pddl
+  - p19.pddl
+  - p28.pddl
+  - p29.pddl
+  - p30.pddl

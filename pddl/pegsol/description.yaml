@@ -1,0 +1,46 @@
+Types:
+- location
+Predicates:
+  (in-line ?x - location ?y - location ?z - location): Location {x} is in line with Location {y} and Location {z}
+  (occupied ?l - location): Location {l} is occupied
+  (free ?l - location): Location {l} is free
+  (move-ended): The move has ended
+  (last-visited ?l - location): Location {l} was last visited
+Actions:
+  (jump-new-move ?from - location ?over - location ?to - location): 'Move the piece from location {from} over location {over} to location {to}. Requires that a move has ended, the three locations are aligned ({from}, {over}, {to}) and: {from} and {over} are occupied, while {to} is free. After the action, move-ended is false; {from} and {over} become free, {to} becomes occupied and is marked last-visited; {to} is no longer free.'
+  (jump-continue-move ?from - location ?over - location ?to - location): Jump-continue-move from {from} over {over} to {to} moves the piece from location {from} to location {to} by jumping over {over}. Requires that location {from} is the last-visited location, {from} and {over} are occupied, {to} is free, and {from}, {over}, and {to} are in-line. After execution, {from} and {over} become free and unoccupied, {to} becomes occupied, and last-visited flags update so that {to} is now the last visited location while {from} is no longer last visited.
+  (end-move ?loc - location): End the move to location {loc}. Requires that {loc} is the last-visited location. Causes move-ended to become true and {loc} to no longer be last-visited.
+Problems:
+  easy:
+  - p01.pddl
+  - p02.pddl
+  - p03.pddl
+  - p04.pddl
+  - p05.pddl
+  - p06.pddl
+  - p07.pddl
+  - p08.pddl
+  - p09.pddl
+  - p10.pddl
+  medium:
+  - p11.pddl
+  - p12.pddl
+  - p13.pddl
+  - p14.pddl
+  - p15.pddl
+  - p16.pddl
+  - p17.pddl
+  - p18.pddl
+  - p19.pddl
+  - p20.pddl
+  hard:
+  - p21.pddl
+  - p22.pddl
+  - p23.pddl
+  - p24.pddl
+  - p25.pddl
+  - p26.pddl
+  - p27.pddl
+  - p28.pddl
+  - p29.pddl
+  - p30.pddl

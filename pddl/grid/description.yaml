@@ -1,0 +1,61 @@
+Types:
+- object
+Predicates:
+  (conn ?x - object ?y - object): Object {x} is connected to Object {y}
+  (key-shape ?k - object ?s - object): Key {k} has the shape of Object {s}
+  (lock-shape ?x - object ?s - object): Object {x} is locked to shape {s}
+  (at ?r - object ?x - object): Object {r} is at Object {x}
+  (at-robot ?x - object): Object {x} is at the robot
+  (place ?p - object): Object {p} is placed
+  (key ?k - object): Key {k}.
+  (shape ?s - object): Object {s} has a shape
+  (locked ?x - object): Object {x} is locked
+  (holding ?k - object): Object {k} is held
+  (open ?x - object): Object {x} is open
+  (arm-empty): The arm is empty
+Actions:
+  (unlock ?curpos - object ?lockpos - object ?key - object ?shape - object): 'Unlocks the lock {lockpos} located at position {curpos} using key {key} with shape {shape} to open it.
+
+
+    Requires that {curpos} and {lockpos} are placed, {key} exists, {shape} exists, {curpos} and {lockpos} are connected, key {key} matches shape {shape}, the lock at {lockpos} has shape {shape}, the robot is at {curpos}, {lockpos} is locked, and the robot is holding {key}.
+
+
+    Results in {lockpos} becoming open and no longer locked.'
+  (move ?curpos - object ?nextpos - object): Move the robot from location {curpos} to location {nextpos}. Requires that both {curpos} and {nextpos} are valid locations, the robot is currently at {curpos}, there is a connection between {curpos} and {nextpos}, and {nextpos} is open. After the move, the robot is at {nextpos} and no longer at {curpos}.
+  (pickup ?curpos - object ?key - object): Pick up the object {key} from object {curpos}. Requires that {curpos} is a valid position, {key} is an object, the robot is at {curpos}, {key} is at {curpos}, and the arm is empty. Causes {key} to be held, {key} to no longer be at {curpos}, and the arm to become non-empty.
+  (pickup-and-loose ?curpos - object ?newkey - object ?oldkey - object): 'Pickup-and-loose {newkey} from position {curpos}. Preconditions: position {curpos} exists, {newkey} is a key and at {curpos}, the robot is at {curpos}, and the robot is holding {oldkey}. Effects: the robot holds {newkey}, {oldkey} is placed at {curpos}, {oldkey} is no longer held, and {newkey} is no longer at {curpos}.'
+  (putdown ?curpos - object ?key - object): Put down object {curpos} at position {curpos} using the robot’s arm for object {key}. Requires that {curpos} is an object place, {key} is an object key, the robot is at {curpos}, and the robot is holding {key}. Causes {key} to be placed at {curpos}, the arm to become empty, and the robot to no longer hold {key}.
+Problems:
+  easy:
+  - p01.pddl
+  - p02.pddl
+  - p03.pddl
+  - p04.pddl
+  - p05.pddl
+  - p06.pddl
+  - p07.pddl
+  - p08.pddl
+  - p09.pddl
+  - p10.pddl
+  medium:
+  - p11.pddl
+  - p12.pddl
+  - p13.pddl
+  - p14.pddl
+  - p15.pddl
+  - p16.pddl
+  - p17.pddl
+  - p18.pddl
+  - p19.pddl
+  - p20.pddl
+  hard:
+  - p21.pddl
+  - p22.pddl
+  - p23.pddl
+  - p24.pddl
+  - p25.pddl
+  - p26.pddl
+  - p27.pddl
+  - p28.pddl
+  - p29.pddl
+  - p30.pddl

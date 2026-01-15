@@ -1,0 +1,69 @@
+Types:
+- card
+- colnum
+- cellnum
+- num
+- suit
+Predicates:
+  (on ?c1 - card ?c2 - card): Card {c1} is on card {c2}
+  (incell ?c - card): Card {c} is in the cell
+  (clear ?c - card): Card {c} is clear
+  (cellspace ?n - cellnum): Cell {n} is in the cellspace
+  (colspace ?n - colnum): Column {n} has a color space.
+  (home ?c - card): Card {c} is at home
+  (bottomcol ?c - card): Card {c} is at the bottom column
+  (canstack ?c1 - card ?c2 - card): Card {c1} can be stacked on Card {c2}
+  (hassuit ?c - card ?s - suit): Card {c} has suit {s}
+  (value ?c - card ?v - num): Card {c} has value {v}
+  (successor ?n1 - num ?n0 - num): Number {n1} is the successor of Number {n0}
+  (colsuccessor ?n1 - colnum ?n0 - colnum): Column {n1} is the successor of column {n0}
+  (cellsuccessor ?n1 - cellnum ?n0 - cellnum): Cell {n1} is the successor of Cell {n0}
+Actions:
+  (move ?card - card ?oldcard - card ?newcard - card): Move block {b1} from on block {b2} to on block {b3}. Requires that {b1} (block {b1}) is clear and on {b2}, that {b3} (block {b3}) is clear, and that {b1} can be stacked on {b3}. After the move, {b1} is on {b3}, {b2} becomes clear, and {b3} is no longer clear.
+  (move-b ?card - card ?newcard - card ?cols - colnum ?ncols - colnum): Move block {b1} (block) from column {c} onto block {b2} (block) in column {cn}, placing {b1} on top of {b2}. Requires that {b1} is clear and is the bottom block of its column, {b2} is clear, {b1} can be stacked on {b2}, column {c} has space, and column {cn} is the successor of column {c}. After the move, {b1} is on {b2}, column {cn} has space, {b1} is no longer bottom, {b2} is no longer clear, and column {c} loses its space.
+  (sendtofree ?card - card ?oldcard - card ?cells - cellnum ?ncells - cellnum): Move card {card} (card) that is on {oldcard} to a free cell {ncells}, using starting cell {cells} (cell {cells}). Requires that {card} is clear, {card} is on {oldcard}, there is a free cell {cells}, and a successor relation from {cells} to {ncells}. Afterward, {card} is in cell {ncells}, {oldcard} becomes clear, cell {cells} becomes occupied, and {card} is no longer clear and is no longer on {oldcard}; cell {ncells} becomes free.
+  (sendtofree-b ?card - card ?cells - cellnum ?ncells - cellnum ?cols - colnum ?ncols - colnum): Move block {card} from cell {cells} and column {cols} to cell {ncells} and column {ncols}, freeing the previous space and using the new space. Requires that block {card} is clear and at the bottom of its column, and that there is space at cell {cells} and in column {cols}, with {ncells} and {ncols} in the appropriate successor positions. After the move, {card} is in cell {ncells} (and in column {ncols}); the previous cell {cells} and column {cols} are freed, and {card} is no longer bottom or clear.
+  (sendtonewcol ?card - card ?oldcard - card ?cols - colnum ?ncols - colnum): Move the block {card} that is on {oldcard} to the next column after {cols} (column {ncols}). Requires that {card} is clear, column {cols} has space and a successor {ncols}, and {card} is on {oldcard}. Causes {card} to be at the bottom of column {ncols}, {oldcard} to become clear, column {ncols} to have space, and {card} to no longer be on {oldcard}, while column {cols} loses its space.
+  (sendtohome ?card - card ?oldcard - card ?suitname - suit ?vcard - num ?homecard - card ?vhomecard - num): 'Move card {card} from on {oldcard} to its home on {homecard}. Requires that {card} is clear and on {oldcard}, that {homecard} is at home with the same suit {suitname} as {card}, and that the values {vcard} and {vhomecard} are consecutive (value({card}) = {vcard}, value({homecard}) = {vhomecard}, successor({vcard}, {vhomecard})).
+
+
+    Causes {card} to be at home (home({card}) := true), {oldcard} to become clear, {card} to no longer be on {oldcard}, {homecard} to no longer be at home, and {card} to no longer be clear.'
+  (sendtohome-b ?card - card ?suitname - suit ?vcard - num ?homecard - card ?vhomecard - num ?cols - colnum ?ncols - colnum): Moves card {card} (suit {suitname}, value {vcard}) to its home area on {homecard} (value {vhomecard}) in suit {suitname}. Requires that {card} is clear, at the bottom of its column, and that {homecard} of the same suit is in home with value {vhomecard}, where {vcard} succeeds {vhomecard}; there is column space for {cols} and {ncols} is a successor of {cols}. After execution, {card} is in home, {homecard} is no longer in home, {card} is no longer clear or at the bottom of its column, and column space for {cols} and {ncols} are updated accordingly.
+  ? (homefromfreecell ?card - card ?suitname - suit ?vcard - num ?homecard - card ?vhomecard - num ?cells - cellnum ?ncells - cellnum)
+  : 'Move the card block {card} (suit {suitname}, value {vcard}) to its home block {homecard} (value {vhomecard}) where {vcard} successor to {vhomecard}. Preconditions: {card} is in a cell, {homecard} exists with the same suit, values satisfy successor({vcard}, {vhomecard}); the cell {cells} and its successor {ncells} are valid cells. Effects: home({card}) becomes true; incell({card}) becomes false; cellspace({cells}) becomes false and cellspace({ncells}) becomes true; home({homecard}) becomes false.'
+  (colfromfreecell ?card - card ?newcard - card ?cells - cellnum ?ncells - cellnum): Move block {card} from its current cell to sit on top of block {newcard}, occupying the target cell {ncells} (cell {cells}). Requires that {card} is in a cell, {newcard} is clear, {card} can be stacked on {newcard}, and there exists a valid cell sequence from {ncells} to {cells}. After the move, {card} is no longer in a cell and is on {newcard}, {newcard} is no longer clear, the cell space indicator for {ncells} is true while that for {cells} is false.
+  (newcolfromfreecell ?card - card ?cols - colnum ?ncols - colnum ?cells - cellnum ?ncells - cellnum): Move card {card} from the free cell of column {cols} to the next column {ncols}, placing it at the bottom of that column and clearing it. Requires that {card} is in a cell, column {cols} has space, and the target cell {cells} and its next cell {ncells} exist, with {cols} preceding {ncols} and {ncells} preceding {cells}. After the move, {card} is in the bottom of {ncols}, cleared, no longer in a cell, and both {cols} and {cells} free up space accordingly.
+Problems:
+  easy:
+  - p02.pddl
+  - p05.pddl
+  - p06.pddl
+  - p01.pddl
+  - p04.pddl
+  - p03.pddl
+  - p07.pddl
+  - p09.pddl
+  - p11.pddl
+  - p08.pddl
+  medium:
+  - p13.pddl
+  - p18.pddl
+  - p10.pddl
+  - p12.pddl
+  - p15.pddl
+  - p16.pddl
+  - p17.pddl
+  - p22.pddl
+  - p24.pddl
+  - p27.pddl
+  hard:
+  - p25.pddl
+  - p14.pddl
+  - p20.pddl
+  - p28.pddl
+  - p29.pddl
+  - p21.pddl
+  - p23.pddl
+  - p26.pddl
+  - p19.pddl
+  - p30.pddl

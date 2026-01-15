@@ -1,0 +1,58 @@
+Types:
+- object
+- pieces
+- position
+- one_square
+- two_straight
+- right_l
+Predicates:
+  (clear ?xy - position): Position {xy} is clear
+  (connected ?x - position ?y - position): Position {x} is connected to Position {y}
+  (at_square ?element - one_square ?xy - position): One_square {element} is at position {xy}
+  (at_two ?element - two_straight ?xy - position ?xy2 - position): Two_straight element {element} is at position {xy} and position {xy2}
+  (at_right_l ?element - right_l ?xy - position ?xy2 - position ?xy3 - position): Right_l {element} is at position {xy} relative to {xy2} and {xy3}
+Actions:
+  (move_square ?xy_initial - position ?xy_final - position ?element - one_square): 'Move the one-square {element} from position {xy_initial} to position {xy_final}. Preconditions: {xy_final} is clear, {element} is at {xy_initial}, and {xy_initial} is connected to {xy_final} (and {xy_final} is connected to {xy_initial}). Effects: {xy_initial} becomes clear, {xy_final} becomes not clear, {element} is at {xy_final}, {element} is no longer at {xy_initial}, and total-cost increases by 1.'
+  (move_two ?xy_initial1 - position ?xy_initial2 - position ?xy_final - position ?element - two_straight): Move two-straight piece {e} from positions {xy_initial1} and {xy_initial2} to positions {xy_initial2} and {xy_final}. Requires that {xy_final} is clear, {e} is at {xy_initial1} and {xy_initial2}, and {xy_initial2} is connected to {xy_final}. After the move, {xy_initial1} becomes clear, the piece {e} is now between {xy_initial2} and {xy_final}, {xy_final} becomes not clear, {e} is no longer between {xy_initial1} and {xy_initial2}, and total-cost increases by 2.
+  ? (move_l_right ?xy_initial1 - position ?xy_initial2 - position ?xy_initial3 - position ?xy_final - position ?xy_final2 - position ?xy_between_final - position ?element - right_l)
+  : Move the element {element} along the right-l from the initial sequence {xy_initial1}–{xy_initial2}–{xy_initial3} to end with {xy_final}, {xy_final2}, and {xy_between_final} as the new arrangement. Requires that {xy_final} and {xy_final2} are clear, that {element} is in the initial right-l sequence with {xy_initial1}, {xy_initial2}, {xy_initial3}, and that the specified connections hold (including {xy_final}–{xy_between_final}, {xy_final2}–{xy_between_final}, and that {xy_final} ≠ {xy_final2} and {xy_between_final} ≠ {xy_initial3}). After the move, {xy_initial1} and {xy_initial2} become clear, {xy_final} and {xy_final2} are no longer clear, {element} is now positioned with the final sequence, and the previous at_right_l relation is removed while the new one is established, increasing the total cost by 3.
+  ? (move_l_left ?xy_initial1 - position ?xy_initial2 - position ?xy_initial3 - position ?xy_final - position ?xy_final2 - position ?element - right_l)
+  : Move the right_l element {element} from its initial right positions {xy_initial1}, {xy_initial2}, {xy_initial3} to the final positions {xy_final}, {xy_final2}. Requires that {xy_final} and {xy_final2} are clear; {element} is at the right_l with initial positions {xy_initial1}, {xy_initial2}, {xy_initial3}; {xy_initial1} is connected to {xy_final}, {xy_initial2} is connected to {xy_final2}, and {xy_final2} is connected to {xy_final}, with {xy_final} ≠ {xy_final2}. Afterward, {xy_initial3} and {xy_initial1} are clear, {xy_final} and {xy_final2} are not clear, and {element} sits at the right_l with final positions {xy_final}, {xy_final2} (removing its previous relation to {xy_initial1}, {xy_initial2}, {xy_initial3}); total-cost increases by 3.
+  ? (move_l_up ?xy_initial1 - position ?xy_initial2 - position ?xy_initial3 - position ?xy_final - position ?xy_final2 - position ?xy_between_final - position ?element - right_l)
+  : 'Moves the right_l element {element} from the initial right_l configuration ({xy_initial1}, {xy_initial2}, {xy_initial3}) to the final configuration ({xy_final}, {xy_final2}, {xy_between_final}). Preconditions: {element} is at_right_l with {xy_initial1}, {xy_initial2}, {xy_initial3}; {xy_final} and {xy_final2} are clear; there are required connections between the positions and between the final positions and the between position; and the final positions are distinct from each other and from {xy_initial3}. Effects: {xy_initial2} and {xy_initial3} become clear; {xy_final} and {xy_final2} become not clear; at_right_l(element, {xy_final}, {xy_initial1}, {xy_final2}) holds, while at_right_l(element, {xy_initial1}, {xy_initial2}, {xy_initial3}) is removed; total-cost increases by 3.'
+  ? (move_l_down ?xy_initial1 - position ?xy_initial2 - position ?xy_initial3 - position ?xy_final - position ?xy_final2 - position ?element - right_l)
+  : Move the right_l element {element} along the path from {xy_initial1}–{xy_initial2}–{xy_initial3} to {xy_final}–{xy_final2}. Requires that {xy_final} and {xy_final2} are clear, that {element} is at_right_l with {xy_initial1}, {xy_initial2}, {xy_initial3}, and that {xy_initial2} connects to {xy_final} and {xy_initial3} connects to {xy_final2} with {xy_final2} connected to {xy_final} and {xy_final} ≠ {xy_final2}. After the move, {xy_initial3} and {xy_initial1} are clear, {element} is now at_right_l between {xy_initial2}, {xy_final}, {xy_final2}, {xy_final} and {xy_final2} are not clear, the previous at_right_l is removed, and total-cost increases by 3.
+Problems:
+  easy:
+  - p01.pddl
+  - p10.pddl
+  - p02.pddl
+  - p11.pddl
+  - p03.pddl
+  - p04.pddl
+  - p12.pddl
+  - p05.pddl
+  - p13.pddl
+  - p06.pddl
+  medium:
+  - p14.pddl
+  - p20.pddl
+  - p07.pddl
+  - p08.pddl
+  - p21.pddl
+  - p15.pddl
+  - p22.pddl
+  - p09.pddl
+  - p16.pddl
+  - p17.pddl
+  hard:
+  - p23.pddl
+  - p24.pddl
+  - p18.pddl
+  - p19.pddl
+  - p25.pddl
+  - p26.pddl
+  - p27.pddl
+  - p28.pddl
+  - p29.pddl
+  - p30.pddl

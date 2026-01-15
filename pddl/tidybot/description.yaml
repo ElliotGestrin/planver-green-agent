@@ -1,0 +1,114 @@
+Types:
+- object
+- robot
+- cart
+- xc
+- yc
+- xrel
+- yrel
+Predicates:
+  (leftof ?x1 - xc ?x2 - xc): Object {x1} is to the left of Object {x2}
+  (above ?y1 - yc ?y2 - yc): Yc {y1} is above Yc {y2}
+  (leftof-rel ?x1 - xrel ?x2 - xrel): Element {x1} is left of element {x2}
+  (above-rel ?y1 - yrel ?y2 - yrel): Relation {y1} is above relation {y2}
+  (sum-x ?x - xc ?xr - xrel ?xsum - xc): Sum of xc {x} and xrel {xr} equals xc {xsum}
+  (sum-y ?y - yc ?yr - yrel ?ysum - yc): Yc {y} with relation {yr} yields Yc {ysum}
+  (zerox-rel ?x - xrel): Xrel {x} is a zerox-rel
+  (zeroy-rel ?y - yrel): The yrel value {y} is zero.
+  (object-goal ?o - object ?x - xc ?y - yc): Object {o} has a goal at coordinates ({x}, {y})
+  (parked ?r - robot): Robot {r} is parked
+  (base-pos ?r - robot ?x - xc ?y - yc): Robot {r}'s base is at coordinates ({x}, {y})
+  (base-obstacle ?x - xc ?y - yc): Base obstacle {x} at coordinate {y}
+  (object-pos ?o - object ?x - xc ?y - yc): Object {o} is at coordinates ({x}, {y})
+  (object-done ?o - object): Object {o} is done
+  (surface ?x - xc ?y - yc): Block {x} is on the surface of Block {y}
+  (holding ?r - robot ?o - object): Robot {r} is holding object {o}
+  (gripper-empty ?r - robot): Robot {r}'s gripper is empty.
+  (gripper-rel ?r - robot ?x - xrel ?y - yrel): Robot {r}'s gripper relation is {x} with {y}
+  (gripper-obstacle ?x - xc ?y - yc): Gripper obstacle with coordinates {x} and {y}
+  (pushing ?r - robot ?c - cart): Robot {r} is pushing Cart {c}
+  (not-pushing ?r - robot): Robot {r} is not pushing
+  (not-pushed ?c - cart): Cart {c} is not pushed.
+  (cart-pos ?c - cart ?x - xc ?y - yc): Cart {c} is at ({x}, {y})
+  (on-cart ?o - object ?c - cart): Object {o} is on cart {c}
+Actions:
+  (unpark ?r - robot ?x - xrel ?y - yrel): Unpark robot {r} from the parked state at gripper location ({x}, {y}). Requires that robot {r} is parked, gripper-rel({r}, {x}, {y}) holds, {x} is zerox-rel, and {y} is zeroy-rel. After execution, {r} becomes not parked.
+  (park ?r - robot): Park robot {r} to mark it as parked. Requires that {r} is not parked and {r} is not pushing. After execution, {r} becomes parked.
+  (base-left ?r - robot ?cx - xc ?dx - xc ?y - yc): 'Move robot {r} left from block {cx} to block {dx} on row {y} (dx is left of cx). Requires that {r} is not parked, {r} is not pushing, dx is left of cx, {r} currently occupies {cx} on row {y}, and there is no obstacle at {dx} on row {y}. Results: {r} is no longer at {cx} on row {y} and is now at {dx} on row {y}; {cx} has no obstacle, and {dx} now contains an obstacle.'
+  (base-right ?r - robot ?cx - xc ?dx - xc ?y - yc): Move robot {r} from block {cx} to block {dx} at row {y} (to the right, with {cx} left of {dx}). Requires that {r} is not parked and not pushing, that {cx} is to the left of {dx}, that {r} is currently on {cx} at {y}, and that {dx} at {y} is not blocked. After the action, {r} is no longer on {cx} at {y}, is now on {dx} at {y}, the obstacle at {cx} and {y} is cleared, and the obstacle at {dx} and {y} is set.
+  (base-up ?r - robot ?x - xc ?cy - yc ?dy - yc): 'Move the base of robot {r} from position (x, {cy}) to (x, {dy}) along the same x, with {dy} above {cy}. Requires that {r} is not parked, not pushing, the base is currently at (x, {cy}), and there is no obstacle at (x, {dy}). Effects: the base is removed from (x, {cy}) and placed at (x, {dy}); obstacle at (x, {cy}) becomes false and obstacle at (x, {dy}) becomes true.'
+  (base-down ?r - robot ?x - xc ?cy - yc ?dy - yc): Lower the base of robot {r} on block {x} from height {cy} up to height {dy} (with {cy} above {dy}). Requires that {r} is not parked, not pushing, {cy} is above {dy}, base-pos({r}, {x}, {cy}) is true, and not base-obstacle({x}, {dy}). After the action, base-pos({r}, {x}, {cy}) becomes false, base-pos({r}, {x}, {dy}) becomes true, base-obstacle({x}, {cy}) becomes false, and base-obstacle({x}, {dy}) becomes true.
+  (base-cart-left ?r - robot ?c - cart ?x1 - xc ?x2 - xc ?y - yc ?cx1 - xc ?cx2 - xc ?cy - yc): 'Move the robot {r} and its cart {c} one step to the left: the robot moves from ({x1}, {y}) to ({x2}, {y}) and the cart from ({cx1}, {cy}) to ({cx2}, {cy}). Requires that {r} is pushing {c}, {r} is at ({x1}, {y}) with {c} at ({cx1}, {cy}), {x2} is left of {x1}, {cx2} is left of {cx1}, and both new positions are not blocked by obstacles. After the action, {r} is at ({x2}, {y}) and {c} at ({cx2}, {cy}); the previous cells are updated (obstacles shifted accordingly) to reflect the move.'
+  (base-cart-right ?r - robot ?c - cart ?x1 - xc ?x2 - xc ?y - yc ?cx1 - xc ?cx2 - xc ?cy - yc): 'This action moves the robot {r} and its cart {c} one step to the right: the robot goes from position ({x1}, {y}) to ({x2}, {y}) and the cart goes from ({cx1}, {cy}) to ({cx2}, {cy}). Preconditions: {r} is pushing {c}, {x1} is left of {x2}, {cx1} is left of {cx2}, the robot is at ({x1}, {y}) and the cart is at ({cx1}, {cy}), and there is no obstacle at ({x2}, {y}) or ({cx2}, {cy}). Effects: the robot ends at ({x2}, {y}) and the cart at ({cx2}, {cy}); the previous robot and cart positions ({x1}, {y}) and ({cx1}, {cy}) are cleared, and obstacles update to reflect the new occupied cells.'
+  (base-cart-up ?r - robot ?c - cart ?x - xc ?y1 - yc ?y2 - yc ?cx - xc ?cy1 - yc ?cy2 - yc): 'Base-cart-up moves the robot {r} and cart {c} upward: {r} travels from ({x}, {y1}) to ({x}, {y2}) and {c} from ({cx}, {cy1}) to ({cx}, {cy2}) while pushing. Preconditions: {r} is pushing {c}, {y2} above {y1}, {cy2} above {cy1}, {r} at base-position ({x}, {y1}), {c} at cart-position ({cx}, {cy1}), and no obstacle at ({x}, {y2}) or at ({cx}, {cy2}). Effects: {r} moves to ({x}, {y2}) and is no longer at ({x}, {y1}); {c} moves to ({cx}, {cy2}) and is no longer at ({cx}, {cy1}); obstacle status updated accordingly (previous ({x}, {y1}) cleared and ({x}, {y2}) set; ({cx}, {cy2}) updated as needed).'
+  (base-cart-down ?r - robot ?c - cart ?x - xc ?y1 - yc ?y2 - yc ?cx - xc ?cy1 - yc ?cy2 - yc): 'base-cart-down moves robot {r} carrying cart {c} downward, transferring the robot from base position ({x}, {y1}) to ({x}, {y2}) while the cart moves from ({cx}, {cy1}) to ({cx}, {cy2}). Requires that {r} and {c} are pushing, {y1} is above {y2}, {cy1} is above {cy2}, robot is at base-pos({r}, {x}, {y1}) and cart is at cart-pos({c}, {cx}, {cy1}), and there is no obstacle at ({x}, {y2}) or ({cx}, {cy2}). Effects: base-pos({r}, {x}, {y1}) becomes false and base-pos({r}, {x}, {y2}) becomes true; cart-pos({c}, {cx}, {cy1}) becomes false and cart-pos({c}, {cx}, {cy2}) becomes true; base-obstacle({x}, {y1}) becomes false and base-obstacle({x}, {y2}) becomes true; base-obstacle({cx}, {cy2}) is updated accordingly.'
+  ? (gripper-left ?r - robot ?basex - xc ?basey - yc ?cgxrel - xrel ?dgxrel - xrel ?cgxabs - xc ?dgxabs - xc ?gyrel - yrel ?gyabs - yc)
+  : 'Move the gripper of robot {r} from relative position {cgxrel}, {gyrel} to the left-relative position {dgxrel}, {gyrel} (ending at absolute {dgxabs}, {gyabs}). Requires {r} parked at base {basex}, {basey}, gripper currently at {cgxrel}, {gyrel} with leftof-rel({dgxrel}, {cgxrel}), and valid computed positions with no obstacle at {dgxabs}, {gyabs}. Effects: gripper-rel at {cgxrel}, {gyrel} becomes false and gripper-rel at {dgxrel}, {gyrel} becomes true; obstacle at {cgxabs}, {gyabs} becomes false and obstacle at {dgxabs}, {gyabs} becomes true.'
+  ? (gripper-right ?r - robot ?basex - xc ?basey - yc ?cgxrel - xrel ?dgxrel - xrel ?cgxabs - xc ?dgxabs - xc ?gyrel - yrel ?gyabs - yc)
+  : Moves the gripper of robot {r} from the current relative position ({cgxrel}, {gyrel}) to the next relative position ({dgxrel}, {gyrel}) at the base ({basex}, {basey}). Requires that {r} is parked, the base position is ({basex}, {basey}), the gripper is currently at ({cgxrel}, {gyrel}) and left of the target ({dgxrel}), the absolute coordinates align as ({cgxabs}, {gyabs}) and ({dgxabs}, {gyabs}), and the target location is not currently blocked. After execution, the previous gripper position is released, the new position is occupied by the gripper, the old absolute location is no longer blocked, and the new absolute location becomes blocked.
+  ? (gripper-up ?r - robot ?basex - xc ?basey - yc ?gxrel - xrel ?gxabs - xc ?cgyrel - yrel ?dgyrel - yrel ?cgyabs - yc ?dgyabs - yc)
+  : Move the gripper of robot {r} from its current relative position ({gxrel}, {cgyrel}) to a new relative position ({dgyrel}, {dgyabs}) while keeping the base fixed at ({basex}, {basey}). Requires that robot {r} is parked, the base is at ({basex}, {basey}), the gripper is currently at ({gxrel}, {cgyrel}) and the new vertical relation is above the old one, and that the resulting absolute positions ({gxabs}, {cgyabs}) and ({gxabs}, {dgyabs}) are valid without an obstacle at the new grip position. After the move, the gripper leaves the old relative position and occupies the new one, and the obstacle map updates to reflect the new grip at ({gxabs}, {dgyabs}) and the old grip at ({gxabs}, {cgyabs}) being cleared/adjusted.
+  ? (gripper-down ?r - robot ?basex - xc ?basey - yc ?gxrel - xrel ?gxabs - xc ?cgyrel - yrel ?dgyrel - yrel ?cgyabs - yc ?dgyabs - yc)
+  : Gripper-down for robot {r} at base position ({basex}, {basey}) lowers the gripper from above to grasp the object at relative coordinates ({gxrel}, {cgyrel}) and places it at vertical offset ({dgyrel}). Requires that {r} is parked, base is at ({basex}, {basey}), gripper is currently at ({gxrel}, {cgyrel}) and above the lower position, the position sums are valid, and there is no obstacle at ({gxabs}, {dgyabs}). Causes {r}’s gripper to release the upper position ({gxrel}, {cgyrel}) and hold the lower position ({gxrel}, {dgyrel}); and updates obstacle flags so that ({gxabs}, {cgyabs}) becomes clear, while ({gxabs}, {dgyabs}) becomes occupied.
+  (grasp-cart-left ?r - robot ?c - cart ?x - xc ?y - yc ?cx - xc): Robot {r} grasps the cart {c} (cart {c}) to the left of the robot’s base position at ({x}, {y}), with the cart at ({cx}, {y}). Requires that {r} is not parked, {c} is not pushed, the robot is at base-pos ({x}, {y}), the cart is at cart-pos ({cx}, {y}), {cx} is left of {x}, and {r} is not currently pushing. Results in {r} pushing {c}, and {r} not-pushing becomes false while {c} not-pushed becomes false.
+  (grasp-cart-right ?r - robot ?c - cart ?x - xc ?y - yc ?cx - xc): 'Robot {r} grasps cart {c} at ({cx}, {y}) from its base position ({x}, {y}) and begins pushing it. Requires that {r} is not parked, {c} is not pushed, base-pos({r}) = ({x}, {y}), cart-pos({c}) = ({cx}, {y}), {x} leftof {cx}, and {r} not-pushing. Effects: pushing({r}, {c}) becomes true, not-pushing({r}) becomes false, and not-pushed({c}) becomes false.'
+  (grasp-cart-above ?r - robot ?c - cart ?x - xc ?y - yc ?cy - yc): Grasp cart {c} above robot {r} at base position ({x}, {y}) with cart {c} at height {cy} above {y}. Requires that robot {r} is not parked and not pushing, cart {c} is not-pushed, base-position of {r} is ({x}, {y}), and cart {c} is at x with height {cy} above {y}. After the action, robot {r} pushes cart {c}, {r} is no longer not-pushing, and {c} is no longer not-pushed.
+  (grasp-cart-below ?r - robot ?c - cart ?x - xc ?y - yc ?cy - yc): Grasp cart {c} below robot {r}. The robot {r} must be at base position ({x},{y}) and the cart {c} at ({x},{cy}), with {y} above {cy}, and neither robot {r} nor cart {c} may be parked or already pushed (robot {r} not pushing, cart {c} not pushed). After the action, robot {r} starts pushing cart {c} (pushing({r},{c}) := true), not-pushing({r}) := false, and not-pushed({c}) := false.
+  (ungrasp-cart ?r - robot ?c - cart): 'Ungrasp cart {c} with robot {r}. Preconditions: pushing({r}, {c}) holds (robot {r} is pushing cart {c}). Effects: pushing({r}, {c}) becomes false; not-pushing({r}) becomes true; not-pushed({c}) becomes true.'
+  (get-left ?r - robot ?basex - xc ?basey - yc ?gxrel - xrel ?gxabs - xc ?gyrel - yrel ?gyabs - yc ?o - object ?ox - xc): 'Pick up the leftmost object {o} from coordinates ({ox}, {gyabs}) using robot {r} at base ({basex}, {basey}) with the gripper offset ({gxrel}, {gyrel}) resulting in absolute position ({gxabs}, {gyabs}). Requires that robot {r} is parked at its base, the gripper is at offset ({gxrel}, {gyrel}) and the absolute gripper position is ({gxabs}, {gyabs}), the gripper is empty, object {o} is not done and currently at ({ox}, {gyabs}), and {ox} is left of {gxabs}. Effects: {o} is no longer at ({ox}, {gyabs}) and is now held by {r}; the gripper is no longer empty and is free of the object, and the gripper obstacle at ({ox}, {gyabs}) is cleared.'
+  (get-right ?r - robot ?basex - xc ?basey - yc ?gxrel - xrel ?gxabs - xc ?gyrel - yrel ?gyabs - yc ?o - object ?ox - xc): 'Grab-right object {o} with robot {r} from the world position at ({ox}, {gyabs}), given the robot’s base is at ({basex}, {basey}) and the gripper is offset by ({gxrel}, {gyrel}) (gripper initially empty), with {o} currently left of the gripper and not yet done.
+
+
+    Requires that the robot {r} is parked at base ({basex}, {basey}), the gripper is positioned at ({gxrel}, {gyrel}) relative to the base, the gripper is empty, {o} is not done, and {o} is currently at ({ox}, {gyabs}) with left of the gripper’s x position.
+
+
+    Causes that {o} is no longer at ({ox}, {gyabs}) in the world, clears the gripper obstacle at ({ox}, {gyabs}), makes the gripper no longer empty, and places {o} into the robot’s holding state.'
+  (get-up ?r - robot ?basex - xc ?basey - yc ?gxrel - xrel ?gxabs - xc ?gyrel - yrel ?gyabs - yc ?o - object ?oy - yc): 'Get-up {o} with robot {r} from the base at ({basex}, {basey}) using gripper offset ({gxrel}, {gyrel}) to reach absolute position ({gxabs}, {gyabs}) where {o} is at ({gxabs}, {oy}). Requires that {r} is parked and at base, the gripper is empty, and {o} is not done and currently at ({gxabs}, {oy}) with the gripper offset leading to that position. Effects: {o} is no longer at ({gxabs}, {oy}); gripper-obstacle at ({gxabs}, {oy}) is cleared; gripper-empty({r}) becomes false; holding({r}, {o}) becomes true.'
+  (get-down ?r - robot ?basex - xc ?basey - yc ?gxrel - xrel ?gxabs - xc ?gyrel - yrel ?gyabs - yc ?o - object ?oy - yc): Get-down object {o} with robot {r} from base position ({basex}, {basey}) to absolute coordinates ({gxabs}, {oy}) where the gripper is at offset ({gxrel}, {gyrel}). Requires that robot {r} is parked at base ({basex}, {basey}), gripper is at relative position ({gxrel}, {gyrel}) with absolute position ({gxabs}, {gyabs}), the gripper is empty, object {o} is not done, and object {o} is currently at ({gxabs}, {oy}). After the action, object {o} is no longer at ({gxabs}, {oy}), the gripper obstacle at ({gxabs}, {oy}) is cleared, the gripper is no longer empty, and robot {r} is holding {o}.
+  (get-from-cart ?r - robot ?x - xc ?y - yc ?gxrel - xrel ?gyrel - yrel ?o - object ?c - cart ?cx - xc ?cy - yc): Get object {o} from cart {c} using robot {r} at base position ({x},{y}) with gripper offset ({gxrel},{gyrel}) and cart {c} located at ({cx},{cy}). Requires that {r} is parked at base position ({x},{y}) with gripper empty and gripper relative position ({gxrel},{gyrel}), and that {o} is on cart {c}. After execution, {r} holds {o}, the gripper is no longer empty, and {o} is no longer on cart {c}.
+  (put-left ?r - robot ?basex - xc ?basey - yc ?gxrel - xrel ?gxabs - xc ?gyrel - yrel ?gyabs - yc ?o - object ?ox - xc): Place the object {o} that is currently held by robot {r} to the left of the gripper, at position ({ox}, {gyabs}) on the surface, and mark that location as an obstacle. Requires that {r} is parked at base ({basex}, {basey}), the gripper is at offset ({gxrel}, {gyrel}) giving absolute position ({gxabs}, {gyabs}), and {r} holds {o}, with {ox} left of the gripper and the destination not blocked by an obstacle. After the action, {r} no longer holds {o}, {o} is at ({ox}, {gyabs}), the location becomes an obstacle, and the gripper for {r} is empty.
+  (put-right ?r - robot ?basex - xc ?basey - yc ?gxrel - xrel ?gxabs - xc ?gyrel - yrel ?gyabs - yc ?o - object ?ox - xc): 'Put-right: The robot {r} places the object {o} that it is holding at the position with coordinates ({ox}, {gyabs}), which lies to the right of the base at ({basex}, {basey}). Requires that {r} is parked at base ({basex}, {basey}) with the object {o} in its gripper at offset ({gxrel}, {gyrel}) giving absolute ({gxabs}, {gyabs}), and that there is no obstacle at ({ox}, {gyabs}) and the surface is valid. After execution, {o} is no longer held by {r}; its position becomes ({ox}, {gyabs}), the location becomes an gripper-obstacle, and the robot''s gripper becomes empty.'
+  (put-up ?r - robot ?basex - xc ?basey - yc ?gxrel - xrel ?gxabs - xc ?gyrel - yrel ?gyabs - yc ?o - object ?oy - yc): 'Put-up the object {o} from robot {r} by moving it from the gripper to the surface at coordinates ({gxabs}, {oy}), computed from the base position ({basex}, {basey}) and gripper offset ({gxrel}, {gyrel}).
+
+
+    Requires that robot {r} is parked at base position ({basex}, {basey}), the gripper is at offset ({gxrel}, {gyrel}) with absolute position ({gxabs}, {gyabs}), and {r} is holding {o}, with {oy} above {gyabs}, on a surface and not occupied by an obstacle at ({gxabs}, {oy}).
+
+
+    Results that {o} is placed at ({gxabs}, {oy}) on the surface, the gripper becomes empty, the gripper-obstacle flag at ({gxabs}, {oy}) is set, and {o} is no longer held.'
+  (put-down ?r - robot ?basex - xc ?basey - yc ?gxrel - xrel ?gxabs - xc ?gyrel - yrel ?gyabs - yc ?o - object ?oy - yc): Put down the object {o} from robot {r} onto the surface at absolute position ({gxabs}, {oy}) reached from base ({basex}, {basey}) by gripper offset ({gxrel}, {gyrel}). Requires that {r} is parked at base ({basex}, {basey}), the gripper is at relative offset ({gxrel}, {gyrel}) with absolute position ({gxabs}, {gyabs}), {r} is holding {o}, the surface exists at ({gxabs}, {oy}), and there is no obstacle at that location. Causes {r} to no longer hold {o}, places {o} at ({gxabs}, {oy}) on the surface, marks the location as now occupied by the object, and leaves the gripper empty.
+  (put-on-cart ?r - robot ?x - xc ?y - yc ?gxrel - xrel ?gyrel - yrel ?o - object ?c - cart ?cx - xc ?cy - yc): 'Put object {o} into cart {c} using robot {r} at base position ({x},{y}) with gripper offset ({gxrel},{gyrel}). Requires that robot {r} is parked at base position ({x},{y}), gripper relative position is ({gxrel},{gyrel}), object {o} is being held by {r}, and cart {c} is at position ({cx},{cy}). Effects: {o} is no longer held by {r}, {o} is on-cart in {c}, and gripper of {r} becomes empty.'
+  (finish-object ?o - object ?x - xc ?y - yc): Finish-object for object {o} (object {o}) located at coordinates ({x}, {y}) with its goal at ({x}, {y}). Requires that {o} is not yet done, that {o} is currently at position ({x}, {y}), and that the goal for {o} is at ({x}, {y}). After finishing, {o} is marked as done.
+Problems:
+  easy:
+  - p01.pddl
+  - p02.pddl
+  - p04.pddl
+  - p07.pddl
+  - p08.pddl
+  - p11.pddl
+  - p14.pddl
+  - p17.pddl
+  - p22.pddl
+  - p24.pddl
+  medium:
+  - p03.pddl
+  - p06.pddl
+  - p10.pddl
+  - p13.pddl
+  - p15.pddl
+  - p16.pddl
+  - p18.pddl
+  - p25.pddl
+  - p05.pddl
+  - p12.pddl
+  hard:
+  - p19.pddl
+  - p20.pddl
+  - p27.pddl
+  - p09.pddl
+  - p23.pddl
+  - p26.pddl
+  - p28.pddl
+  - p21.pddl
+  - p29.pddl
+  - p30.pddl

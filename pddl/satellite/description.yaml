@@ -1,0 +1,54 @@
+Types:
+- satellite
+- direction
+- instrument
+- mode
+Predicates:
+  (on_board ?i - instrument ?s - satellite): Instrument {i} is on board Satellite {s}
+  (supports ?i - instrument ?m - mode): Instrument {i} supports mode {m}
+  (pointing ?s - satellite ?d - direction): Satellite {s} points to direction {d}
+  (power_avail ?s - satellite): Power is available for Satellite {s}
+  (power_on ?i - instrument): Instrument {i} is powered on
+  (calibrated ?i - instrument): Instrument {i} is calibrated
+  (have_image ?d - direction ?m - mode): Direction {d} has image mode {m}
+  (calibration_target ?i - instrument ?d - direction): Direction {d} is the calibration target for Instrument {i}
+Actions:
+  (turn_to ?s - satellite ?d_new - direction ?d_prev - direction): Turn the satellite {s} from direction {d_prev} to direction {d_new}. Requires that the satellite {s} is currently pointing at {d_prev}. Causes {s} to point at {d_new} and no longer point at {d_prev}.
+  (switch_on ?i - instrument ?s - satellite): Switch on instrument {i} aboard satellite {s}. Requires that {i} is on_board with {s} and power is available on {s}. After execution, {i} is powered on (power_on({i}) = true), {i} is not calibrated (calibrated({i}) = false), and power becomes unavailable on {s} (power_avail({s}) = false).
+  (switch_off ?i - instrument ?s - satellite): Switch off instrument {i} on satellite {s}. Requires that {i} (instrument) is on board {s} and power is on for {i}. After execution, power_on for {i} becomes false and power_avail for {s} becomes true.
+  (calibrate ?s - satellite ?i - instrument ?d - direction): Calibrate instrument {i} on satellite {s} toward direction {d}. Requires that {i} is on board {s}, the calibration_target for {i} in direction {d} is satisfied, {s} is pointed toward {d}, and power is on for {i}. After the operation, instrument {i} is calibrated.
+  (take_image ?s - satellite ?d - direction ?i - instrument ?m - mode): 'Take an image of direction {d} using instrument {i} in mode {m} from satellite {s}. Preconditions: {i} (instrument) is calibrated, {i} is on-board {s}, {i} supports mode {m}, power is on for {i}, and {s} points to {d}. Effect: have_image({d}, {m}) becomes true.'
+Problems:
+  easy:
+  - p01.pddl
+  - p02.pddl
+  - p03.pddl
+  - p04.pddl
+  - p05.pddl
+  - p06.pddl
+  - p07.pddl
+  - p08.pddl
+  - p09.pddl
+  - p10.pddl
+  medium:
+  - p11.pddl
+  - p12.pddl
+  - p13.pddl
+  - p14.pddl
+  - p15.pddl
+  - p25.pddl
+  - p26.pddl
+  - p16.pddl
+  - p27.pddl
+  - p17.pddl
+  hard:
+  - p28.pddl
+  - p18.pddl
+  - p19.pddl
+  - p29.pddl
+  - p30.pddl
+  - p20.pddl
+  - p21.pddl
+  - p22.pddl
+  - p23.pddl
+  - p24.pddl

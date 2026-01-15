@@ -1,0 +1,49 @@
+Types:
+- object
+Predicates:
+  (isadjacent ?x - object ?y - object): Object {x} is adjacent to Object {y}
+  (tailsnake ?x - object): Object {x} is a tailsnake
+  (headsnake ?x - object): Object {x} is a headsnake
+  (nextsnake ?x - object ?y - object): Object {x} has next snake {y}
+  (blocked ?x - object): Object {x} is blocked
+  (spawn ?x - object): Object {x} is spawned
+  (nextspawn ?x - object ?y - object): Object {x} is the next spawn of object {y}
+  (ispoint ?x - object): Point {x} is a point
+Actions:
+  (move ?head - object ?newhead - object ?tail - object ?newtail - object): Move the snake head from {head} to {newhead} and update the tail from {tail} to {newtail}. Requires that {head} is a snake head, {newhead} is adjacent to {head}, {tail} is a tailsnake, and {newtail} is just behind {tail}; and that {newhead} is not blocked and not a point. After the move, {newhead} becomes the head (blocked and connected to {head}), {head} is no longer the head, {newtail} becomes the tail, and {tail} is no longer the tail (with {newtail} now at the end).
+  (move-and-eat-spawn ?head - object ?newhead - object ?spawnpoint - object ?nextspawnpoint - object): 'Move and eat: move the snake head {head} to {newhead} at spawnpoint {spawnpoint} and eat {newhead}, creating a new head there and advancing to {nextspawnpoint}. Requires that {head} is part of the snake, {head} is adjacent to {newhead}, {newhead} is not blocked and is a point, there is a spawn at {spawnpoint} and a nextspawn relation from {spawnpoint} to {nextspawnpoint}, and {spawnpoint} is not the dummy point. Causes {blocked({newhead})} to be true; {headsnake({newhead})} to be true; {nextsnake({newhead}, {head})} to be true; {headsnake({head})} to be false; {ispoint({newhead})} to be false; {ispoint({spawnpoint})} to be true; {spawn({spawnpoint})} to be false; {spawn({nextspawnpoint})} to be true.'
+  (move-and-eat-no-spawn ?head - object ?newhead - object): Move the snake head {head} to the adjacent position {newhead} and extend the body there. Requires that {head} is a snake head, {head} is adjacent to {newhead}, {newhead} is not blocked, {newhead} is a point, and a dummy spawn point exists. After the move, {newhead} becomes blocked and part of the snake head ({newhead} head), the next segment points to {head}, the previous head {head} is no longer the head, and {newhead} is no longer a point.
+Problems:
+  easy:
+  - p01.pddl
+  - p02.pddl
+  - p03.pddl
+  - p04.pddl
+  - p19.pddl
+  - p05.pddl
+  - p06.pddl
+  - p20.pddl
+  - p21.pddl
+  - p07.pddl
+  medium:
+  - p22.pddl
+  - p08.pddl
+  - p23.pddl
+  - p09.pddl
+  - p24.pddl
+  - p10.pddl
+  - p25.pddl
+  - p11.pddl
+  - p26.pddl
+  - p27.pddl
+  hard:
+  - p12.pddl
+  - p28.pddl
+  - p13.pddl
+  - p29.pddl
+  - p14.pddl
+  - p30.pddl
+  - p15.pddl
+  - p16.pddl
+  - p17.pddl
+  - p18.pddl

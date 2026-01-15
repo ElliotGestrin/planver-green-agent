@@ -1,0 +1,52 @@
+Types:
+- numb
+- position
+Predicates:
+  (height ?p - position ?h - numb): Position {p} has height {h}
+  (at ?p - position): Position {p} is at a location
+  (has-block): There is a block.
+  (succ ?n1 - numb ?n2 - numb): Number {n2} is the successor of Number {n1}
+  (neighbor ?p1 - position ?p2 - position): Position {p1} is neighbor of Position {p2}
+  (is-depot ?p - position): Position {p} is a depot
+Actions:
+  (move ?from - position ?to - position ?h - numb): Move block {b1} from position {p1} to position {p2} at height {h}. Requires that {p1} contains {b1} and is at height {h}, {p1} is a neighbor of {p2}, and {p2} is at height {h}. After the move, {b1} is no longer at {p1} and {b1} is now at {p2}.
+  (move-up ?from - position ?hfrom - numb ?to - position ?hto - numb): Move up block {b1} from position {from} at height {hfrom} to the neighboring position {to} at height {hto}. Requires that {b1} is at {from} with height {hfrom}, {from} and {to} are neighbors, the height at {to} is {hto}, and {hto} is the successor of {hfrom}. After the move, {b1} is no longer at {from} and is now at {to}.
+  (move-down ?from - position ?hfrom - numb ?to - position ?hto - numb): Move-down block {b1} from position {from} at height {hfrom} to position {to} at height {hto}, where {to} is a neighbor of {from} and {hto} is the successor of {hfrom}. Requires that the block is at {from}, {to} is a neighbor of {from}, and the heights are {hfrom} for {from} and {hto} for {to}. Causes {b1} to be at {to} and no longer at {from}.
+  (place-block ?rpos - position ?bpos - position ?hbefore - numb ?hafter - numb): 'Place the block {bpos} (block) at the neighboring position {rpos}, moving its height from {hbefore} to {hafter} (where {hafter} is the successor of {hbefore}). Requires that {rpos} is a position, {rpos} and {bpos} are neighbors, the block at {rpos} and the block at {bpos} are at height {hbefore}, there exists a successor {hafter}, a movable block exists, and {bpos} is not a depot. Effects: height({bpos}) becomes {hafter}, height({bpos}) at {hbefore} becomes false, and has-block becomes false.'
+  (remove-block ?rpos - position ?bpos - position ?hbefore - numb ?hafter - numb): Remove the block from position {bpos} at height {hbefore} and place it on position {rpos} at height {hafter}. Requires that {rpos} is adjacent to {bpos}, {rpos} has height {hafter}, {bpos} has height {hbefore}, {hbefore} and {hafter} are consecutive, and there is no block currently held. After the action, height({bpos}, {hbefore}) becomes false, height({bpos}, {hafter}) becomes true, and a block is present.
+  (create-block ?p - position): Create a block at depot position {p}. Requires that the agent is at {p}, there is no block at {p}, and {p} is a depot. After execution, {p} contains a block and has-block becomes true.
+  (destroy-block ?p - position): Destroy the block at depot position {p}. Requires that {p} is a depot position, {p} currently holds a block, and a block exists at {p}. After execution, {p} no longer has a block (has-block becomes false).
+Problems:
+  easy:
+  - p01.pddl
+  - p02.pddl
+  - p03.pddl
+  - p04.pddl
+  - p06.pddl
+  - p08.pddl
+  - p21.pddl
+  - p05.pddl
+  - p07.pddl
+  - p09.pddl
+  medium:
+  - p10.pddl
+  - p11.pddl
+  - p12.pddl
+  - p26.pddl
+  - p27.pddl
+  - p13.pddl
+  - p14.pddl
+  - p15.pddl
+  - p16.pddl
+  - p17.pddl
+  hard:
+  - p18.pddl
+  - p19.pddl
+  - p20.pddl
+  - p23.pddl
+  - p24.pddl
+  - p25.pddl
+  - p28.pddl
+  - p30.pddl
+  - p22.pddl
+  - p29.pddl

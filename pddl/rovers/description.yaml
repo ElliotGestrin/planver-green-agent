@@ -1,0 +1,78 @@
+Types:
+- rover
+- waypoint
+- store
+- camera
+- mode
+- lander
+- objective
+Predicates:
+  (at ?x - rover ?y - waypoint): Rover {x} is at waypoint {y}
+  (at_lander ?x - lander ?y - waypoint): Lander {x} is at waypoint {y}
+  (can_traverse ?r - rover ?x - waypoint ?y - waypoint): Rover {r} can traverse from Waypoint {x} to Waypoint {y}
+  (equipped_for_soil_analysis ?r - rover): Rover {r} is equipped for soil analysis.
+  (equipped_for_rock_analysis ?r - rover): Rover {r} is equipped for rock analysis.
+  (equipped_for_imaging ?r - rover): Rover {r} is equipped for imaging
+  (empty ?s - store): Store {s} is empty
+  (have_rock_analysis ?r - rover ?w - waypoint): Rover {r} has rock analysis for Waypoint {w}
+  (have_soil_analysis ?r - rover ?w - waypoint): Rover {r} has soil analysis at Waypoint {w}
+  (full ?s - store): Store {s} is full
+  (calibrated ?c - camera ?r - rover): Camera {c} is calibrated for Rover {r}
+  (supports ?c - camera ?m - mode): Camera {c} supports mode {m}
+  (available ?r - rover): Rover {r} is available
+  (visible ?w - waypoint ?p - waypoint): Waypoint {w} is visible from waypoint {p}
+  (have_image ?r - rover ?o - objective ?m - mode): Rover {r} has image of Objective {o} in Mode {m}
+  (communicated_soil_data ?w - waypoint): Waypoint {w} has had soil data communicated
+  (communicated_rock_data ?w - waypoint): Waypoint {w} has had its rock data communicated
+  (communicated_image_data ?o - objective ?m - mode): Objective {o} in Mode {m} has communicated image data.
+  (at_soil_sample ?w - waypoint): Waypoint {w} has a soil sample at it
+  (at_rock_sample ?w - waypoint): Waypoint {w} is the rock sample location
+  (visible_from ?o - objective ?w - waypoint): Objective {o} is visible from Waypoint {w}
+  (store_of ?s - store ?r - rover): Store {s} belongs to rover {r}
+  (calibration_target ?i - camera ?o - objective): Camera {i} is the calibration target for objective {o}
+  (on_board ?i - camera ?r - rover): Camera {i} is on board Rover {r}
+  (channel_free ?l - lander): Lander {l} has a free channel
+Actions:
+  (navigate ?x - rover ?y - waypoint ?z - waypoint): Navigate rover {r1} from waypoint {w1} to waypoint {w2}. Requires that {r1} can traverse from {w1} to {w2}, that {r1} is available, that {r1} is currently at {w1}, and that {w1} can see {w2}. After execution, {r1} is no longer at {w1} and is now at {w2}.
+  (sample_soil ?x - rover ?s - store ?p - waypoint): 'Sample soil from waypoint {p} using rover {x} and store {s}. Preconditions: rover {x} is at waypoint {p}, there is a soil sample at waypoint {p}, rover {x} is equipped for soil analysis, store {s} contains rover {x}, and store {s} is empty. Effects: store {s} becomes full and empty({s}) becomes false, have_soil_analysis(rover {x}, waypoint {p}) becomes true, and at_soil_sample(waypoint {p}) becomes false.'
+  (sample_rock ?x - rover ?s - store ?p - waypoint): Sample a rock at waypoint {p} with rover {x} and deposit it into store {s}. Requires that rover {x} is at waypoint {p}, waypoint {p} contains a rock sample, rover {x} is equipped for rock analysis, store_of({s}, {x}) holds, and store {s} is empty. Causes store {s} to become full (empty({s}) = false), have_rock_analysis({x}, {p}) = true, and at_rock_sample({p}) = false.
+  (drop ?x - rover ?y - store): Drop rover {x} into store {y}. Requires that store {y} contains {x} and is full. After the drop, store {y} is not full and becomes empty.
+  (calibrate ?r - rover ?i - camera ?t - objective ?w - waypoint): Calibrate the imaging camera {i} on rover {r} for objective {t} at waypoint {w}. Requires that rover {r} is equipped for imaging, objective {t} is a calibration target for camera {i}, rover {r} is at waypoint {w}, objective {t} is visible from waypoint {w}, and camera {i} is on board rover {r}. Causes calibrated({i}, {r}) to be true (camera {i} is calibrated on rover {r}).
+  (take_image ?r - rover ?p - waypoint ?o - objective ?i - camera ?m - mode): Take an image of objective {o} from waypoint {p} by rover {r} using camera {i} in mode {m}. Requires that camera {i} on rover {r} is calibrated, on-board, and equipped for imaging, supports mode {m}, objective {o} is visible from waypoint {p}, and rover {r} is at waypoint {p}. Afterward, have_image({r}, {o}, {m}) becomes true and calibrated({i}, {r}) becomes false.
+  (communicate_soil_data ?r - rover ?l - lander ?p - waypoint ?x - waypoint ?y - waypoint): 'Communicate soil data for waypoint {p} from rover {r} to lander {l} using waypoints {x} and {y}. Preconditions: rover {r} at {x}, lander {l} at {y}, rover {r} has soil analysis for {p}, {visible(x, y)}, rover {r} is {available}, and lander {l} has a free channel ({channel_free(l)}). Effects: {communicated_soil_data(p)} becomes true; {available(r)} and {channel_free(l)} toggle to false, then return to true.'
+  (communicate_rock_data ?r - rover ?l - lander ?p - waypoint ?x - waypoint ?y - waypoint): Communicate rock data from rover {r} to lander {l} about waypoint {p} using visibility between waypoint {x} and {y}. Requires that rover {r} is at waypoint {x}, lander {l} is at waypoint {y}, rover {r} has rock analysis for waypoint {p}, waypoint {x} is visible to waypoint {y}, rover {r} is available, and lander {l} has a free channel. After execution, rover {r} becomes unavailable and then available again, lander {l} frees and then occupies its channel, and rock data for waypoint {p} is marked as communicated.
+  (communicate_image_data ?r - rover ?l - lander ?o - objective ?m - mode ?x - waypoint ?y - waypoint): Communicate image data from rover {r} to lander {l} about objective {o} in mode {m} via waypoint {x} to waypoint {y}. Requires that {r} is at {x}, lander {l} is at {y}, {r} has image of {o} in {m}, there is visibility between {x} and {y}, {r} is available, and {l}'s channel is free. After execution, {r} becomes available again, {l}'s channel becomes free, the image data about {o} in {m} is marked as communicated, and the channel state at {l} is updated accordingly.
+Problems:
+  easy:
+  - p01.pddl
+  - p02.pddl
+  - p03.pddl
+  - p04.pddl
+  - p05.pddl
+  - p06.pddl
+  - p07.pddl
+  - p08.pddl
+  - p09.pddl
+  - p10.pddl
+  medium:
+  - p11.pddl
+  - p12.pddl
+  - p21.pddl
+  - p22.pddl
+  - p13.pddl
+  - p23.pddl
+  - p24.pddl
+  - p14.pddl
+  - p25.pddl
+  - p26.pddl
+  hard:
+  - p15.pddl
+  - p27.pddl
+  - p28.pddl
+  - p16.pddl
+  - p29.pddl
+  - p30.pddl
+  - p17.pddl
+  - p18.pddl
+  - p19.pddl
+  - p20.pddl

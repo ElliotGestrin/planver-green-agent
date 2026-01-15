@@ -1,0 +1,51 @@
+Types:
+- car
+- curb
+Predicates:
+  (at-curb ?car - car): Car {car} is at the curb
+  (at-curb-num ?car - car ?curb - curb): Car {car} is at curb {curb}
+  (behind-car ?car - car ?front-car - car): Car {car} is behind Car {front_car}
+  (car-clear ?car - car): Car {car} is clear
+  (curb-clear ?curb - curb): Curb {curb} is clear
+Actions:
+  (move-curb-to-curb ?car - car ?curbsrc - curb ?curbdest - curb): 'Move car {car} from curb {curbsrc} to curb {curbdest}. Requires that car {car} is clear, curb {curbdest} is clear, car {car} is at {curbsrc}, and {curbsrc} and {curbdest} are different.
+
+
+    Causes curb {curbdest} to become not clear, curb {curbsrc} to become clear, car {car} to be at {curbdest}, car {car} to no longer be at {curbsrc}, and total-cost to increase by 1.'
+  (move-curb-to-car ?car - car ?curbsrc - curb ?cardest - car): Move the car {car} from curb {curbsrc} to the car {cardest}. Requires that {car} is clear, {cardest} is clear, {car} is at curb {curbsrc}, {cardest} is at a curb, and {car} ≠ {cardest}. Afterward, {car} is no longer at curb {curbsrc} (and not at any curb), {cardest} becomes not clear, curb {curbsrc} becomes clear, {car} is behind {cardest}, and total-cost increases by 1.
+  (move-car-to-curb ?car - car ?carsrc - car ?curbdest - curb): Move car {car} to curb {curbdest} from behind car {carsrc}. Requires that car {car} is clear, curb {curbdest} is clear, car {car} is behind car {carsrc}, and {car} is different from {carsrc}. After execution, curb {curbdest} is no longer clear, car {carsrc} becomes clear, car {car} is at curb {curbdest}, behind-car({car}, {carsrc}) is removed, car {car} is at curb, and total-cost increases by 1.
+  (move-car-to-car ?car - car ?carsrc - car ?cardest - car): 'Move car {car} from {carsrc} to {cardest}. Requires that {car} is clear, {cardest} is clear, {car} is behind {carsrc}, {cardest} is at the curb, and {car}, {carsrc}, and {cardest} are distinct cars. After: {cardest} is no longer clear, {carsrc} becomes clear, {car} is behind {cardest} and no longer behind {carsrc}, with total-cost increased by 1.'
+Problems:
+  easy:
+  - p12.pddl
+  - p01.pddl
+  - p13.pddl
+  - p02.pddl
+  - p14.pddl
+  - p20.pddl
+  - p03.pddl
+  - p15.pddl
+  - p21.pddl
+  - p04.pddl
+  medium:
+  - p16.pddl
+  - p22.pddl
+  - p05.pddl
+  - p17.pddl
+  - p23.pddl
+  - p06.pddl
+  - p18.pddl
+  - p24.pddl
+  - p07.pddl
+  - p19.pddl
+  hard:
+  - p25.pddl
+  - p08.pddl
+  - p26.pddl
+  - p09.pddl
+  - p27.pddl
+  - p10.pddl
+  - p28.pddl
+  - p11.pddl
+  - p29.pddl
+  - p30.pddl

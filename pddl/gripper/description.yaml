@@ -1,0 +1,48 @@
+Types:
+- object
+Predicates:
+  (room ?r - object): Room {r} is a room
+  (ball ?b - object): Ball {b} is a ball
+  (gripper ?g - object): Gripper {g} is an object
+  (at-robby ?r - object): Object {r} is at Robby
+  (at ?b - object ?r - object): Object {b} is at object {r}
+  (free ?g - object): Object {g} is free
+  (carry ?o - object ?g - object): Object {o} carries object {g}
+Actions:
+  (move ?from - object ?to - object): Move object {from} to object {to}. Requires that {from} is in a room, {to} is in a room, and the robot is at {from}. Causes {to} to be the robot’s location (at-robby {to}) and {from} to no longer be the robot’s location (at-robby {from} becomes false).
+  (pick ?obj - object ?room - object ?gripper - object): 'Pick up ball {b1} from room {r1} using gripper {g1}. Requires that ball {b1} is in room {r1} and room {r1} is the robot’s current location, and gripper {g1} is free. Consequences: ball {b1} is carried by gripper {g1}; ball {b1} is no longer in room {r1}; gripper {g1} is no longer free.'
+  (drop ?obj - object ?room - object ?gripper - object): Drop ball {o1} into room {r1} using gripper {g1}. Requires that ball {o1}, room {r1}, and gripper {g1} exist, {o1} is carried by {g1}, and the robot is at room {r1}. Causes {o1} to be at room {r1}, free(gripper {g1}) to be true, and carry({o1}, {g1}) to be false.
+Problems:
+  easy:
+  - p01.pddl
+  - p02.pddl
+  - p03.pddl
+  - p04.pddl
+  - p05.pddl
+  - p06.pddl
+  - p07.pddl
+  - p08.pddl
+  - p09.pddl
+  - p10.pddl
+  medium:
+  - p11.pddl
+  - p12.pddl
+  - p13.pddl
+  - p14.pddl
+  - p15.pddl
+  - p16.pddl
+  - p17.pddl
+  - p18.pddl
+  - p19.pddl
+  - p20.pddl
+  hard:
+  - p21.pddl
+  - p22.pddl
+  - p23.pddl
+  - p24.pddl
+  - p25.pddl
+  - p26.pddl
+  - p27.pddl
+  - p28.pddl
+  - p29.pddl
+  - p30.pddl

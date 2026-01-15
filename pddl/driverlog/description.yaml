@@ -1,0 +1,54 @@
+Types:
+- location
+- locatable
+- driver
+- truck
+- obj
+Predicates:
+  (at ?obj - locatable ?loc - location): Locatable {obj} is at location {loc}
+  (in ?obj1 - obj ?obj - truck): Object {obj1} is in Truck {obj}
+  (driving ?d - driver ?v - truck): Driver {d} is driving Truck {v}
+  (link ?x - location ?y - location): Location {x} is linked to Location {y}.
+  (path ?x - location ?y - location): Path from Location {x} to Location {y}
+  (empty ?v - truck): Truck {v} is empty
+Actions:
+  (load-truck ?obj - obj ?truck - truck ?loc - location): 'Load object {obj} (object) into truck {truck} (truck) at location {loc}. Preconditions: both {truck} and {obj} are at {loc}. Effects: {obj} is in {truck} and no longer at {loc}.'
+  (unload-truck ?obj - obj ?truck - truck ?loc - location): Unload object {obj} from truck {truck} to location {loc}. Requires that {obj} is in {truck} and {truck} is at {loc}. Causes {obj} to no longer be in {truck} and {obj} to be at {loc}.
+  (board-truck ?driver - driver ?truck - truck ?loc - location): 'Board truck {t1} by driver {d1} at location {l1}. Preconditions: driver {d1} is at location {l1}, truck {t1} is at location {l1}, and truck {t1} is empty. Effects: driver {d1} is no longer at location {l1}; driving({d1}, {t1}) becomes true; truck {t1} is no longer empty.'
+  (disembark-truck ?driver - driver ?truck - truck ?loc - location): Disembark driver {driver} from truck {truck} at location {loc}. Requires that truck {truck} is at {loc} and driver {driver} is driving truck {truck}. Causes that driving({driver}, {truck}) becomes false, at({driver}, {loc}) becomes true, and empty({truck}) becomes true.
+  (drive-truck ?truck - truck ?loc-from - location ?loc-to - location ?driver - driver): Drive truck {t1} from location {l1} to location {l2} using driver {d1}. Requires that truck {t1} is at location {l1}, that driver {d1} is driving truck {t1}, and that there is a link from location {l1} to location {l2}. Causes truck {t1} to no longer be at location {l1} and to be at location {l2}.
+  (walk ?driver - driver ?loc-from - location ?loc-to - location): Move driver {driver} from location {loc_from} to location {loc_to}. Requires that {driver} is at {loc_from} and there is a path from {loc_from} to {loc_to}. Causes {driver} to be at {loc_to} and no longer at {loc_from}.
+Problems:
+  easy:
+  - p01.pddl
+  - p02.pddl
+  - p03.pddl
+  - p21.pddl
+  - p22.pddl
+  - p04.pddl
+  - p23.pddl
+  - p05.pddl
+  - p24.pddl
+  - p06.pddl
+  medium:
+  - p07.pddl
+  - p25.pddl
+  - p26.pddl
+  - p27.pddl
+  - p08.pddl
+  - p09.pddl
+  - p10.pddl
+  - p28.pddl
+  - p11.pddl
+  - p29.pddl
+  hard:
+  - p30.pddl
+  - p12.pddl
+  - p13.pddl
+  - p15.pddl
+  - p14.pddl
+  - p16.pddl
+  - p17.pddl
+  - p18.pddl
+  - p19.pddl
+  - p20.pddl

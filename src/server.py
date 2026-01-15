@@ -20,20 +20,25 @@ def main():
     parser.add_argument("--card-url", type=str, help="URL to advertise in the agent card")
     args = parser.parse_args()
 
-    # Fill in your agent card
-    # See: https://a2a-protocol.org/latest/tutorials/python/3-agent-skills-and-card/
-    
     skill = AgentSkill(
-        id="",
-        name="",
-        description="",
-        tags=[],
-        examples=[]
+        id="pddl-planner-evaluation",
+        name="PDDL Planner Evaluation",
+        description="Evaluates PDDL planning agents by testing them on various domains and difficulty levels. "
+                    "Generates natural language planning tasks, collects plans from the agent, and validates them.",
+        tags=["planning", "pddl", "evaluation", "validation"],
+        examples=[
+            "Test a planner on blocksworld domain with 5 easy, 3 medium, and 2 hard problems",
+            "Evaluate a planner across all domains with 2 problems per difficulty level",
+            "Test planner on gripper and logistics domains with 10 easy problems each"
+        ]
     )
 
     agent_card = AgentCard(
-        name="",
-        description="",
+        name="PDDL Planner Evaluator",
+        description="A green agent that evaluates PDDL planning capabilities. "
+                    "It generates natural language planning tasks from PDDL domains, "
+                    "sends them to a planner agent, and validates the returned plans. "
+                    "Supports testing across 30+ PDDL domains with configurable difficulty levels.",
         url=args.card_url or f"http://{args.host}:{args.port}/",
         version='1.0.0',
         default_input_modes=['text'],

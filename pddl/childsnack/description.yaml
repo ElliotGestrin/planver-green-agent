@@ -1,0 +1,62 @@
+Types:
+- child
+- bread-portion
+- content-portion
+- sandwich
+- tray
+- place
+Predicates:
+  (at_kitchen_bread ?b - bread-portion): Bread-portion {b} is at the kitchen
+  (at_kitchen_content ?c - content-portion): Content-portion {c} is in the kitchen
+  (at_kitchen_sandwich ?s - sandwich): Sandwich {s} is at the kitchen
+  (no_gluten_bread ?b - bread-portion): Bread-portion {b} has no gluten
+  (no_gluten_content ?c - content-portion): Content portion {c} has no gluten
+  (ontray ?s - sandwich ?t - tray): Sandwich {s} is on tray {t}
+  (no_gluten_sandwich ?s - sandwich): Sandwich {s} has no gluten
+  (allergic_gluten ?c - child): Child {c} is allergic to gluten
+  (not_allergic_gluten ?c - child): Child {c} is not allergic to gluten
+  (served ?c - child): Child {c} has been served
+  (waiting ?c - child ?p - place): Child {c} is waiting at Place {p}
+  (at ?t - tray ?p - place): Tray {t} is at Place {p}
+  (notexist ?s - sandwich): Sandwich {s} does not exist
+Actions:
+  (make_sandwich_no_gluten ?s - sandwich ?b - bread-portion ?c - content-portion): 'Make a gluten-free sandwich {s} from bread-portion {b1} (bread-portion) and content-portion {c1} (content-portion) in the kitchen. Preconditions: {b1} is in the kitchen and is gluten-free, {c1} is in the kitchen and is gluten-free, and sandwich {s} does not exist yet. Effects: {b1} and {c1} are removed from the kitchen, sandwich {s} appears in the kitchen, is marked gluten-free, and is considered existing.'
+  (make_sandwich ?s - sandwich ?b - bread-portion ?c - content-portion): Assemble sandwich {s} from bread {b} (bread-portion) and content {c} (content-portion) in the kitchen. Requires that bread {b} is at the kitchen, content {c} is at the kitchen, and sandwich {s} does not exist yet. Afterward, bread {b} and content {c} are no longer in the kitchen, sandwich {s} exists in the kitchen, and notexist({s}) becomes false.
+  (put_on_tray ?s - sandwich ?t - tray): Place sandwich {s} on tray {t}. Requires that sandwich {s} is at the kitchen and tray {t} is in the kitchen. Causes sandwich {s} to no longer be at the kitchen and to be on tray {t}.
+  (serve_sandwich_no_gluten ?s - sandwich ?c - child ?t - tray ?p - place): Serve gluten-free sandwich {s} to child {c} on tray {t} at place {p}. Requires that {c} is gluten-allergic, {s} is on {t}, {c} is waiting at {p}, and {s} is gluten-free. Results in {s} no longer being on {t} and {c} being served.
+  (serve_sandwich ?s - sandwich ?c - child ?t - tray ?p - place): 'Serve sandwich {s} to child {c} using tray {t} at place {p}. Preconditions: child {c} is not allergic to gluten, child {c} is waiting at place {p}, sandwich {s} is on tray {t}, and tray {t} is at place {p}. Effects: sandwich {s} is no longer on tray {t}, and child {c} is served.'
+  (move_tray ?t - tray ?p1 - place ?p2 - place): Move tray {t} from place {p1} to place {p2}. Requires that tray {t} is at place {p1}. After the action, tray {t} is no longer at place {p1} and is at place {p2}.
+Problems:
+  easy:
+  - p01.pddl
+  - p02.pddl
+  - p03.pddl
+  - p14.pddl
+  - p04.pddl
+  - p15.pddl
+  - p05.pddl
+  - p16.pddl
+  - p06.pddl
+  - p17.pddl
+  medium:
+  - p07.pddl
+  - p18.pddl
+  - p08.pddl
+  - p19.pddl
+  - p09.pddl
+  - p20.pddl
+  - p26.pddl
+  - p10.pddl
+  - p21.pddl
+  - p27.pddl
+  hard:
+  - p11.pddl
+  - p22.pddl
+  - p28.pddl
+  - p12.pddl
+  - p29.pddl
+  - p23.pddl
+  - p13.pddl
+  - p24.pddl
+  - p30.pddl
+  - p25.pddl

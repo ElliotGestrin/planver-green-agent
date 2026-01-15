@@ -1,0 +1,64 @@
+Types:
+- pipe
+- area
+- product
+- batch-atom
+Predicates:
+  (connect ?from - area ?to - area ?pipe - pipe): Area {from} is connected to Area {to} via Pipe {pipe}
+  (unitary ?pipe - pipe): Pipe {pipe} is unitary
+  (not-unitary ?pipe - pipe): Pipe {pipe} is not unitary
+  (last ?batch-atom - batch-atom ?pipe - pipe): Batch {batch-atom} is last for pipe {pipe}
+  (first ?batch-atom - batch-atom ?pipe - pipe): Batch {batch-atom} is connected to Pipe {pipe}
+  (follow ?next - batch-atom ?previous - batch-atom): Batch-atom {next} follows batch-atom {previous}
+  (is-product ?batch-atom - batch-atom ?product - product): Batch-atom {x} has product {y}
+  (on ?batch-atom - batch-atom ?area - area): Batch-atom {x} is on Area {area}
+  (may-interface ?product-a - product ?product-b - product): Product {product-a} may interface with Product {product-b}
+  (normal ?pipe - pipe): Pipe {pipe} is normal
+  (push-updating ?pipe - pipe): Pipe {pipe} is undergoing a push update
+  (pop-updating ?pipe - pipe): Pipe {pipe} is updating
+Actions:
+  ? (push-start ?pipe - pipe ?batch-atom-in - batch-atom ?from-area - area ?to-area - area ?first-batch-atom - batch-atom ?product-batch-atom-in - product ?product-first-batch - product)
+  : Push-start the first batch-atom-in {batch-atom-in} through pipe {pipe} from area {from-area} to area {to-area}. Requires that pipe {pipe} is normal, the first batch-atom in the pipe is {first-batch-atom}, {from-area} and {to-area} are connected by {pipe}, {batch-atom-in} is on {from-area}, pipe {pipe} is not unitary, {batch-atom-in} is the product {product-batch-atom-in}, the first batch-atom is the product {product-first-batch}, and these products may interface. Causes {pipe} to be updating (true) and not normal (false), makes {first-batch-atom-in} the first in {pipe} and the previous first no longer first, establishes follow({first-batch-atom}, {batch-atom-in}) as true, and moves {batch-atom-in} off {from-area}.
+  (push-end ?pipe - pipe ?from-area - area ?to-area - area ?last-batch-atom - batch-atom ?next-last-batch-atom - batch-atom): Push-end transports the batch-atom sequence along pipe {pipe} from area {from-area} to area {to-area}, updating the batch order so that the next batch-atom becomes the last. Requires that push-updating({pipe}) is true, batch-atom {last-batch-atom} is the last for pipe {pipe}, connect({from-area}, {to-area}, {pipe}) holds, pipe {pipe} is not unitary, and follow({last-batch-atom}, {next-last-batch-atom}) holds. After execution, push-updating({pipe}) becomes false, normal({pipe}) becomes true, follow({last-batch-atom}, {next-last-batch-atom}) becomes false, last({next-last-batch-atom}, {pipe}) becomes true, last({last-batch-atom}, {pipe}) becomes false, and on({last-batch-atom}, {to-area}) becomes true.
+  ? (pop-start ?pipe - pipe ?batch-atom-in - batch-atom ?from-area - area ?to-area - area ?last-batch-atom - batch-atom ?product-batch-atom-in - product ?product-last-batch - product)
+  : 'This action pop-start moves the batch-atom-in {batch-atom-in} from area {from-area} to area {to-area} along pipe {pipe}, updating the sequence so that {batch-atom-in} becomes the last in the pipe and the previous last-batch-atom is no longer last. Preconditions: the pipe {pipe} is normal, currently has last-batch-atom {last-batch-atom}, is connected from {from-area} to {to-area}, {batch-atom-in} is on {to-area}, {batch-atom-in} is of product {product-batch-atom-in}, {last-batch-atom} is of product {product-last-batch}, and the two products may interface; the pipe is not unitary. Effects: pop-updating({pipe}) becomes true, normal({pipe}) becomes false, last({batch-atom-in}, {pipe}) becomes true, last({last-batch-atom}, {pipe}) becomes false, follow({batch-atom-in}, {last-batch-atom}) becomes true, and on({batch-atom-in}, {to-area}) becomes false.'
+  ? (pop-end ?pipe - pipe ?from-area - area ?to-area - area ?first-batch-atom - batch-atom ?next-first-batch-atom - batch-atom)
+  : 'Pop-end of the transfer along pipe {p} from area {a_from} to area {a_to} using batch-atom {b1} as the current front and batch-atom {b2} as the next front. Requires that {p} is updating, {b1} is the first batch-atom on {p}, there is a connect relation between {a_from} and {a_to} via {p}, {p} is not unitary, and {b2} follows {b1}. Effects: {p} is no longer updating and becomes normal; the follow relation between {b2} and {b1} is removed, {b2} becomes the new first batch-atom on {p}, {b1} is no longer the first batch-atom on {p}, and {b1} is placed on area {a_from}.'
+  ? (push-unitarypipe ?pipe - pipe ?batch-atom-in - batch-atom ?from-area - area ?to-area - area ?first-batch-atom - batch-atom ?product-batch-atom-in - product ?product-first-batch - product)
+  : 'Push unitary pipe {pipe} from area {from-area} to area {to-area}, placing its first batch-atom {first-batch-atom} and its batch-atom-in {batch-atom-in} so that {batch-atom-in} is the first (and effectively the last) element of the pipe, and moving the first-batch-atom to {to-area} while removing it from {from-area}. Preconditions: {batch-atom-in} is on {from-area}, the pipe is unitary and connects {from-area} to {to-area}, and {batch-atom-in} corresponds to product {product-batch-atom-in} with product {product-first-batch} and may interface between them. Effects: {batch-atom-in} becomes the first (and last) in {pipe}, {first-batch-atom} is no longer first in {pipe}, and {batch-atom-in} is no longer on {from-area} while {first-batch-atom} is now on {to-area}.'
+  ? (pop-unitarypipe ?pipe - pipe ?batch-atom-in - batch-atom ?from-area - area ?to-area - area ?last-batch-atom - batch-atom ?product-batch-atom-in - product ?product-last-batch - product)
+  : Pop-unitarypipe moves batch-atom-in {batch-atom-in} through unitary pipe {pipe} from area {from-area} to area {to-area}, provided a last-batch-atom {last-batch-atom} is on {pipe}, {from-area} is connected to {to-area} by {pipe}, {batch-atom-in} is the product {product-batch-atom-in}, {last-batch-atom} is the product {product-last-batch}, and the two products may interface. After the action, {batch-atom-in} becomes the last batch-atom in {pipe}, {last-batch-atom} becomes the first batch-atom and is on {from-area}, and {batch-atom-in} is no longer on {to-area}.
+Problems:
+  easy:
+  - p01.pddl
+  - p02.pddl
+  - p03.pddl
+  - p04.pddl
+  - p05.pddl
+  - p06.pddl
+  - p11.pddl
+  - p12.pddl
+  - p07.pddl
+  - p08.pddl
+  medium:
+  - p13.pddl
+  - p14.pddl
+  - p09.pddl
+  - p10.pddl
+  - p15.pddl
+  - p16.pddl
+  - p21.pddl
+  - p17.pddl
+  - p18.pddl
+  - p22.pddl
+  hard:
+  - p23.pddl
+  - p26.pddl
+  - p27.pddl
+  - p19.pddl
+  - p20.pddl
+  - p24.pddl
+  - p25.pddl
+  - p28.pddl
+  - p29.pddl
+  - p30.pddl

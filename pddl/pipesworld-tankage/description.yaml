@@ -1,0 +1,78 @@
+Types:
+- pipe
+- area
+- product
+- batch-atom
+- tank-slot
+Predicates:
+  (connect ?from - area ?to - area ?pipe - pipe): Area {from} is connected to area {to} by pipe {pipe}
+  (unitary ?pipe - pipe): Pipe {pipe} is unitary
+  (not-unitary ?pipe - pipe): Pipe {pipe} is not unitary
+  (last ?batch-atom - batch-atom ?pipe - pipe): Batch-atom {batch-atom} is last in pipe {pipe}
+  (first ?batch-atom - batch-atom ?pipe - pipe): Batch-atom {batch-atom} is the first for pipe {pipe}
+  (follow ?next - batch-atom ?previous - batch-atom): Batch-atom {next} follows batch-atom {previous}
+  (is-product ?batch-atom - batch-atom ?product - product): Batch-atom {batch_atom} contains product {product}
+  (on ?batch-atom - batch-atom ?area - area): Batch-atom {x} is on area {y}
+  (may-interface ?product-a - product ?product-b - product): Product {x} may interface with Product {y}
+  (normal ?pipe - pipe): Pipe {pipe} is normal
+  (push-updating ?pipe - pipe): Pipe {pipe} is push-updating
+  (pop-updating ?pipe - pipe): Pipe {pipe} is undergoing pop-updating
+  (tank-slot-product-location ?tank-slot - tank-slot ?product - product ?area - area): Tank-slot {tank-slot} contains product {product} in area {area}
+  (occupied ?tank-slot - tank-slot): Tank-slot {x} is occupied
+  (not-occupied ?tank-slot - tank-slot): Tank-slot {slot} is not occupied
+Actions:
+  ? (push-start ?pipe - pipe ?batch-atom-in - batch-atom ?from-area - area ?to-area - area ?first-batch-atom - batch-atom ?product-batch-atom-in - product ?product-first-batch - product ?tank-slot - tank-slot)
+  : 'Push-start through pipeline {pipe} to move batch-atom-in {batch-atom-in} (product {product-batch-atom-in}) from area {from-area} to area {to-area}, starting with first-batch-atom {first-batch-atom} and interfacing with product {product-first-batch}. Preconditions: normal({pipe}) and not-unitary({pipe}) and connect({from-area}, {to-area}, {pipe}) and first({first-batch-atom}, {pipe}) and on({batch-atom-in}, {from-area}) and is-product({batch-atom-in}, {product-batch-atom-in}) and is-product({first-batch-atom}, {product-first-batch}) and may-interface({product-batch-atom-in}, {product-first-batch}) and tank-slot-product-location({tank-slot}, {product-batch-atom-in}, {from-area}) and occupied({tank-slot}). Effects: push-updating({pipe}) := true; normal({pipe}) := false; first({batch-atom-in}, {pipe}) := true; first({first-batch-atom}, {pipe}) := false; follow({first-batch-atom}, {batch-atom-in}) := true; on({batch-atom-in}, {from-area}) := false; occupied({tank-slot}) := false; not-occupied({tank-slot}) := true.'
+  ? (push-end ?pipe - pipe ?from-area - area ?to-area - area ?last-batch-atom - batch-atom ?next-last-batch-atom - batch-atom ?product-last-batch - product ?tank-slot - tank-slot)
+  : 'Push-end for pipe {pipe} from area {from-area} to area {to-area} moves the last batch-atom {last-batch-atom} to {to-area} and makes {next-last-batch-atom} the new last-batch-atom, placing product {product-last-batch} into tank-slot {tank-slot} and marking the slot as occupied.
+
+
+    Requires: pipe {pipe} is updating is false, the pipe is not unitary, {from-area} connects to {to-area} via {pipe}, {last-batch-atom} is the last-batch-atom on {pipe}, follow({last-batch-atom}, {next-last-batch-atom}) holds, is-product({last-batch-atom}, {product-last-batch}) holds, tank-slot-location({tank-slot}, {product-last-batch}, {to-area}) holds, and tank-slot {tank-slot} is not occupied.
+
+
+    Effects: set push-updating({pipe}) to false, set normal({pipe}) to true, set follow({last-batch-atom}, {next-last-batch-atom}) to false, set last({next-last-atom}, {pipe}) to true, set last({last-batch-atom}, {pipe}) to false, set on({last-batch-atom}, {to-area}) to true, set occupied({tank-slot}) to true, and set not-occupied({tank-slot}) to false.'
+  ? (pop-start ?pipe - pipe ?batch-atom-in - batch-atom ?from-area - area ?to-area - area ?last-batch-atom - batch-atom ?product-batch-atom-in - product ?product-last-batch - product ?tank-slot - tank-slot)
+  : 'The pop-start action on block {pipe} initiates moving batch-atom {batch-atom-in} from area {from-area} to area {to-area}, where {batch-atom-in} is on {to-area}, is product {product-batch-atom-in} of {product-last-batch}, and {product-batch-atom-in} may interface with {product-last-batch}, with a tank-slot {tank-slot} located for {product-batch-atom-in} in {to-area} and the last batch-atom {last-batch-atom} currently in {pipe}. Requires that {pipe} is connected from {from-area} to {to-area}, is normal and not-unitary, that last({last-batch-atom}, {pipe}) holds, and that {tank-slot} is occupied and suitable for {product-batch-atom-in} at {to-area}. Effects: {pipe} becomes pop-updating and not normal, last(batch-atom-in, {pipe}) becomes true, last({last-batch-atom}, {pipe}) becomes false, follow({batch-atom-in}, {last-batch-atom}) becomes true, on({batch-atom-in}, {to-area}) becomes false, and {tank-slot} becomes not-occupied.'
+  ? (pop-end ?pipe - pipe ?from-area - area ?to-area - area ?first-batch-atom - batch-atom ?next-first-batch-atom - batch-atom ?product-first-batch - product ?tank-slot - tank-slot)
+  : 'End the pop-end operation for pipe {pipe}. Requires that {pipe} is updating and not unitary, that {from-area} is connected to {to-area} via {pipe}, that the first-batch-atom {first-batch-atom} is at {pipe}, that {next-first-batch-atom} follows {first-batch-atom}, that tank-slot {tank-slot} is the location for product {product-first-batch} at {from-area}, and that {tank-slot} is not occupied.
+
+
+    After the action, {pipe} is no longer updating and becomes normal; the sequencing flag for {next-first-batch-atom} relative to {first-batch-atom} is updated; {next-first-batch-atom} becomes the new first-at-on-pipe, the old {first-batch-atom} is no longer first on {pipe}, the {first-batch-atom} is placed on {from-area}; and {tank-slot} becomes occupied (and no longer not-occupied).'
+  ? (push-unitarypipe ?pipe - pipe ?batch-atom-in - batch-atom ?from-area - area ?to-area - area ?first-batch-atom - batch-atom ?product-batch-atom-in - product ?product-first-batch - product ?from-tank-slot - tank-slot ?to-tank-slot - tank-slot)
+  : 'Push the unitary pipe {p1} to move the first batch-atom {bfa} (product {prod1}) from area {a1} to area {a2} along the connection, occupying the destination tank-slot {ts2} with {bfa}’s product {prod1}. Precondition: {bfa} is the first batch-atom in {p1}, {bfa} and {prod1} are located in {a1}, {p1} is unitary and connected from {a1} to {a2}, and the respective tank-slots {ts1} (holding {prod1} in {a1}) and {ts2} (in {a2}) have the correct occupancy statuses. Effects: {bfa} becomes the first-in-{p1} and then not-first, {bfa} becomes the last-in-{p1} and then not-last, {bfa} is moved off {a1} and on to {a2}, freeing {ts1} and occupying {ts2} with {prod1}.'
+  ? (pop-unitarypipe ?pipe - pipe ?batch-atom-in - batch-atom ?from-area - area ?to-area - area ?first-batch-atom - batch-atom ?product-batch-atom-in - product ?product-first-batch - product ?from-tank-slot - tank-slot ?to-tank-slot - tank-slot)
+  : Move the first batch-atom {first-batch-atom} (product {product-first-batch}) from area {from-area} to area {to-area} through the unitary pipe {pipe}, carrying batch-atom-in {batch-atom-in} (product {product-batch-atom-in}). Requires that {first-batch-atom} is first in {pipe}, there is a connection from {from-area} to {to-area} via {pipe}, the pipe is unitary, {batch-atom-in} is the product {product-batch-atom-in} matching {product-first-batch}, and {from-tank-slot} and {to-tank-slot} are correctly located and not simultaneously occupied. After execution, {first-batch-atom} is no longer first and {batch-atom-in} becomes the first in {pipe}, {batch-atom-in} is placed on {to-area} while {first-batch-atom} is placed on {from-area}, and occupancy of {from-tank-slot} and {to-tank-slot} is updated accordingly.
+Problems:
+  easy:
+  - p01.pddl
+  - p02.pddl
+  - p11.pddl
+  - p12.pddl
+  - p14.pddl
+  - p03.pddl
+  - p04.pddl
+  - p05.pddl
+  - p06.pddl
+  - p15.pddl
+  medium:
+  - p17.pddl
+  - p09.pddl
+  - p10.pddl
+  - p07.pddl
+  - p08.pddl
+  - p13.pddl
+  - p20.pddl
+  - p21.pddl
+  - p18.pddl
+  - p19.pddl
+  hard:
+  - p16.pddl
+  - p22.pddl
+  - p23.pddl
+  - p26.pddl
+  - p24.pddl
+  - p25.pddl
+  - p27.pddl
+  - p29.pddl
+  - p30.pddl
+  - p28.pddl

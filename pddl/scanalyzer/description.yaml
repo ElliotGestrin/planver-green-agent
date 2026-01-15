@@ -1,0 +1,49 @@
+Types:
+- segment
+- car
+Predicates:
+  (on ?c - car ?s - segment): Car {c} is on segment {s}
+  (analyzed ?c - car): Car {c} is analyzed
+  (cycle-2 ?s1 - segment ?s2 - segment): Segment {s1} is in a cycle with Segment {s2}
+  (cycle-4 ?s1 - segment ?s2 - segment ?s3 - segment ?s4 - segment): Segment {s1} is connected to Segment {s2}, Segment {s2} is connected to Segment {s3}, Segment {s3} is connected to Segment {s4}, and Segment {s4} is connected back to Segment {s1}.
+  (cycle-2-with-analysis ?s1 - segment ?s2 - segment): Segment {s1} forms a 2-cycle with Segment {s2}
+  (cycle-4-with-analysis ?s1 - segment ?s2 - segment ?s3 - segment ?s4 - segment): Segment {s1}, Segment {s2}, Segment {s3}, and Segment {s4} form a four-segment cycle that includes analysis.
+Actions:
+  (analyze-2 ?s1 - segment ?s2 - segment ?c1 - car ?c2 - car): Analyze-2 between segment {s1} and segment {s2} using car {c1} on {s1} and car {c2} on {s2}. Requires that cycle-2-with-analysis({s1}, {s2}) holds and {c1} is on {s1} while {c2} is on {s2}. Results in {c1} no longer being on {s1}, {c2} no longer being on {s2}, {c1} being on {s2}, {c2} being on {s1}, and {c1} marked as analyzed.
+  (analyze-4 ?s1 - segment ?s2 - segment ?s3 - segment ?s4 - segment ?c1 - car ?c2 - car ?c3 - car ?c4 - car): Analyze-4 on segments {s1}, {s2}, {s3}, {s4} with cars {c1}, {c2}, {c3}, {c4}. Requires that the cycle-4-with-analysis({s1}, {s2}, {s3}, {s4}) holds and that {c1} is on {s1}, {c2} is on {s2}, {c3} is on {s3}, and {c4} is on {s4}. After the action, {c1} is no longer on {s1} but is on {s4}; {c2} moves from {s2} to {s1}; {c3} moves from {s3} to {s2}; {c4} moves from {s4} to {s3}; and {c1} is marked analyzed.
+  (rotate-2 ?s1 - segment ?s2 - segment ?c1 - car ?c2 - car): Rotate-2 moves car {c1} from segment {s1} to segment {s2} and car {c2} from segment {s2} to segment {s1} in a 2-cycle between segments {s1} and {s2}. Requires that car {c1} is on segment {s1}, car {c2} is on segment {s2}, and segments {s1} and {s2} form a 2-cycle. After the action, {c1} is on {s2} and no longer on {s1}, and {c2} is on {s1} and no longer on {s2}.
+  (rotate-4 ?s1 - segment ?s2 - segment ?s3 - segment ?s4 - segment ?c1 - car ?c2 - car ?c3 - car ?c4 - car): 'Rotate-4 the cars {c1}, {c2}, {c3}, and {c4} around the segments {s1}, {s2}, {s3}, and {s4} in a cycle: {c1} moves from {s1} to {s4}, {c2} from {s2} to {s1}, {c3} from {s3} to {s2}, and {c4} from {s4} to {s3}. Requires that the segments form a cycle (cycle-4({s1}, {s2}, {s3}, {s4})) and that each car is on its starting segment ({c1} on {s1}, {c2} on {s2}, {c3} on {s3}, {c4} on {s4}). After the action, each car is on the next segment in the cycle and no longer on its original segment.'
+Problems:
+  easy:
+  - p01.pddl
+  - p02.pddl
+  - p08.pddl
+  - p03.pddl
+  - p09.pddl
+  - p14.pddl
+  - p04.pddl
+  - p10.pddl
+  - p15.pddl
+  - p05.pddl
+  medium:
+  - p11.pddl
+  - p16.pddl
+  - p06.pddl
+  - p12.pddl
+  - p17.pddl
+  - p07.pddl
+  - p13.pddl
+  - p18.pddl
+  - p19.pddl
+  - p20.pddl
+  hard:
+  - p21.pddl
+  - p22.pddl
+  - p23.pddl
+  - p24.pddl
+  - p25.pddl
+  - p26.pddl
+  - p27.pddl
+  - p28.pddl
+  - p29.pddl
+  - p30.pddl

@@ -1,0 +1,55 @@
+Types:
+- location
+- space
+- fuel
+- locatable
+- vehicle
+- cargo
+Predicates:
+  (at ?o - locatable ?l - location): Locatable {o} is at Location {l}
+  (conn ?l1 - location ?l2 - location): Location {l1} is connected to location {l2}
+  (has-fuel ?l - location ?f - fuel): Location {l} has fuel {f}
+  (fuel-neighbor ?f1 - fuel ?f2 - fuel): Fuel {f1} is a neighbor of fuel {f2}
+  (in ?c - cargo ?v - vehicle): Cargo {c} is in Vehicle {v}
+  (has-space ?v - vehicle ?s - space): Vehicle {v} has space {s}
+  (space-neighbor ?s1 - space ?s2 - space): Space {s1} is a neighbor of Space {s2}
+  (not-equal ?l1 - location ?l2 - location): Location {l1} is not equal to Location {l2}
+Actions:
+  (move ?v - vehicle ?l1 - location ?l2 - location ?f1 - fuel ?f2 - fuel): Move vehicle {v} from location {l1} to location {l2}, provided {v} is at {l1}, {l1} is connected to {l2}, {l1} has fuel {f1}, and {f1} has fuel-neighbor {f2}. Afterward, {v} is at {l2} and not at {l1}; {l1} no longer has fuel {f1}, and {l1} now has fuel {f2}.
+  (load ?c - cargo ?v - vehicle ?l - location ?s1 - space ?s2 - space): Load cargo {c} into vehicle {v} from location {l} using space {s1} to space {s2}. Requires that cargo {c} and vehicle {v} are at location {l}, vehicle {v} has space at {s1}, and {s2} is a neighbor of {s1}. Causes cargo {c} to no longer be at {l}, cargo {c} to be in vehicle {v}, space {s1} on {v} to be freed, and space {s2} on {v} to become available.
+  (unload ?c - cargo ?v - vehicle ?l - location ?s1 - space ?s2 - space): 'Unload cargo {c} from vehicle {v} at location {l}, moving it from space {s1} to the neighboring space {s2}. Preconditions: {c} is in {v}, {v} is at {l}, {v} has-space {s1}, and space-neighbor({s1}, {s2}). Effects: {c} is not in {v}, {c} is at {l}, {v} no longer has-space {s1}, and {v} has-space {s2}.'
+  (donate ?l1 - location ?l2 - location ?f11 - fuel ?f12 - fuel ?f13 - fuel ?f21 - fuel ?f22 - fuel): Donate fuel along a chain from location {l1} to location {l2} using fuels {f11}, {f12}, {f13}, {f21}, and {f22}. Requires that {l1} and {l2} are different locations, {l1} has fuel {f11} and {f12} is a neighbor of {f11}, and {l2} has fuel {f21} and {f22} is a neighbor of {f21}. After the action, {l1} no longer has {f11} and gains {f12}, while {l2} loses {f21} and gains {f22}.
+Problems:
+  easy:
+  - p03.pddl
+  - p02.pddl
+  - p04.pddl
+  - p01.pddl
+  - p05.pddl
+  - p06.pddl
+  - p09.pddl
+  - p14.pddl
+  - p25.pddl
+  - p08.pddl
+  medium:
+  - p07.pddl
+  - p17.pddl
+  - p23.pddl
+  - p12.pddl
+  - p13.pddl
+  - p15.pddl
+  - p24.pddl
+  - p26.pddl
+  - p10.pddl
+  - p22.pddl
+  hard:
+  - p18.pddl
+  - p28.pddl
+  - p16.pddl
+  - p11.pddl
+  - p19.pddl
+  - p29.pddl
+  - p30.pddl
+  - p20.pddl
+  - p21.pddl
+  - p27.pddl

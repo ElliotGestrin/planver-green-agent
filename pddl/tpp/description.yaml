@@ -1,0 +1,55 @@
+Types:
+- place
+- locatable
+- level
+- depot
+- market
+- truck
+- goods
+Predicates:
+  (loaded ?g - goods ?t - truck ?l - level): Goods {g} are loaded in Truck {t} at Level {l}
+  (ready-to-load ?g - goods ?m - market ?l - level): Goods {g} are ready to load at Market {m} on Level {l}
+  (stored ?g - goods ?l - level): Goods {g} is stored at level {l}
+  (on-sale ?g - goods ?m - market ?l - level): Goods {g} is on sale at Market {m} Level {l}
+  (next ?l1 - level ?l2 - level): Level {l1} is next to Level {l2}
+  (at ?t - truck ?p - place): Truck {t} is at Place {p}
+  (connected ?p1 - place ?p2 - place): Place {p1} is connected to place {p2}
+Actions:
+  (drive ?t - truck ?from - place ?to - place): Drive truck {t} from place {from} to place {to}. Requires that truck {t} is at place {from} and place {from} is connected to place {to}. Causes that truck {t} is no longer at place {from} and is at place {to}.
+  (load ?g - goods ?t - truck ?m - market ?l1 - level ?l2 - level ?l3 - level ?l4 - level): 'Load goods {g} into truck {t} at market {m}, advancing its load level from {l3} to {l4}. Requires that {t} is at {m}, goods {g} is currently loaded on {t} at level {l3}, and goods {g} is ready to load at market {m} at level {l2}, with next({l2}, {l1}) and next({l4}, {l3}) holding. Effects: {g} becomes loaded on {t} at level {l4} and no longer loaded at level {l3}; ready-to-load({g}, {m}, {l1}) becomes true and ready-to-load({g}, {m}, {l2}) becomes false.'
+  (unload ?g - goods ?t - truck ?d - depot ?l1 - level ?l2 - level ?l3 - level ?l4 - level): 'Unload goods {g} from truck {t} at depot {d}. Preconditions: {g} is on {t} at level {l2}, {g} is stored at level {l3}, the truck is at {d}, and next({l2}, {l1}) and next({l4}, {l3}) hold. Effects: {g} becomes loaded on {t} at level {l1}; {g} is no longer loaded on {t} at level {l2}; {g} is stored at level {l4}; and {g} is no longer stored at level {l3}.'
+  (buy ?t - truck ?g - goods ?m - market ?l1 - level ?l2 - level ?l3 - level ?l4 - level): Buy goods {g} from market {m} using truck {t}. Requires that truck {t} is at market {m}, goods {g} are on-sale at level {l2}, and goods {g} are ready-to-load at level {l3}, with level {l1} next after {l2} and level {l4} next after {l3}. After the action, on-sale becomes true at level {l1} and false at level {l2}, and ready-to-load becomes true at level {l4} and false at level {l3}.
+Problems:
+  easy:
+  - p01.pddl
+  - p02.pddl
+  - p03.pddl
+  - p04.pddl
+  - p05.pddl
+  - p06.pddl
+  - p07.pddl
+  - p08.pddl
+  - p09.pddl
+  - p10.pddl
+  medium:
+  - p11.pddl
+  - p12.pddl
+  - p13.pddl
+  - p14.pddl
+  - p15.pddl
+  - p16.pddl
+  - p17.pddl
+  - p18.pddl
+  - p19.pddl
+  - p20.pddl
+  hard:
+  - p21.pddl
+  - p22.pddl
+  - p23.pddl
+  - p24.pddl
+  - p25.pddl
+  - p26.pddl
+  - p27.pddl
+  - p28.pddl
+  - p29.pddl
+  - p30.pddl

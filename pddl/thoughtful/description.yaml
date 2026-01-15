@@ -1,0 +1,86 @@
+Types:
+- card
+- colnum
+- num
+- suittype
+Predicates:
+  (on ?c1 - card ?c2 - card): Card {c1} is on Card {c2}
+  (ace ?c - card): Card {c} is an ace
+  (king ?c - card): Card {c} is king
+  (clear ?c - card): Card {c} is clear
+  (colspace ?n - colnum): Column {n} has a color space.
+  (bottomtalon ?c - card): Card {c} has a bottom talon
+  (toptalon ?c - card): Card {c} is the top talon
+  (ontalon ?c1 - card ?c2 - card): Card {c1} is on talon of Card {c2}
+  (talonplayable ?c - card): Card {c} can be played by Talon
+  (instack ?c - card): Card {c} is in the stack
+  (home ?c - card): Card {c} is at home
+  (faceup ?c - card): Card {c} is face up
+  (bottomcol ?c - card): Card {c} is at the bottom column
+  (suit ?c - card ?s - suittype): Card {c} has suit {s}
+  (value ?c - card ?v - num): Card {c} has value {v}
+  (successor ?n1 - num ?n0 - num): Number {n1} is the successor of number {n0}
+  (canstack ?c1 - card ?c2 - card): Card {c1} can stack on Card {c2}
+  (colsuccessor ?n1 - colnum ?n0 - colnum): Column {n1} is the successor of Column {n0}
+Actions:
+  (move-col-to-col ?card - card ?oldcard - card ?newcard - card): Move the card {card} from on {oldcard} to be on top of {newcard}. Requires that {card} is faceup, {newcard} is clear, {card} can stack on {newcard}, and {card} is on {oldcard}. After the move, {card} is on {newcard}, {oldcard} becomes clear and faceup, {card} is no longer on {oldcard}, and {newcard} is no longer clear.
+  (move-col-to-col-b ?card - card ?newcard - card ?cols - colnum ?ncols - colnum): Move block {b1} onto block {b2}, placing {b1} on top of {b2} (within the successor column relation from column {c1} to column {c2}). Requires {b1} to be faceup and the bottom of its column, {b2} to be clear, {b1} can be stacked on {b2}, there is space in column {c1}, and {c2} is the successor of {c1}. After the move, {b1} is on {b2}, there is space in destination column {c2}, {b1} is no longer bottom, {b2} is no longer clear, and there is no space left in source column {c1}.
+  (move-col-to-col-c ?card - card ?oldcard - card ?cols - colnum ?ncols - colnum): 'Move block {card} from on block {oldcard} to column {cols} (column {cols} has successor {ncols}). Preconditions: block {card} is faceup and a king; column {cols} has space; column {cols} has a successor {ncols}; and {card} is on {oldcard}. Effects: block {card} becomes the bottom block of column {cols}; block {oldcard} becomes clear and remains faceup; column {ncols} gains space while column {cols} loses space; and {card} is no longer on {oldcard}.'
+  (col-to-home ?card - card ?oldcard - card ?suit - suittype ?vcard - num ?homecard - card ?vhomecard - num): 'Move the card {card} from on top of {oldcard} to the home pile represented by {homecard}. Preconditions: {card} is clear and on {oldcard}, {homecard} is in the home area, suits of {card} and {homecard} match, and values are {vcard} and {vhomecard} with {vcard} successor of {vhomecard}. Effects: {card} becomes at home on {homecard}; {oldcard} becomes clear and faceup; {card} becomes not clear and not faceup; {oldcard} is no longer supporting {card}; {homecard} is no longer considered in the home state.'
+  ? (col-to-home-b ?card - card ?homecard - card ?suit - suittype ?vcard - num ?vhomecard - num ?cols - colnum ?ncols - colnum)
+  : 'Move card {card} (card of suit {suit} and value {vcard}) from the bottom of column {cols} to its home card {homecard} of the same suit with value {vhomecard}, where {vcard} and {vhomecard} are consecutive. Requires that {card} is clear, at the bottom of its column, {homecard} is a home card of the same suit with value {vhomecard}, and there is space next to column {cols} (i.e., {ncols} is its successor). Effects: {card} becomes home and no longer in the column, {homecard} is no longer considered home, {card} is not faceup, and both {card} and {cols} spaces become not clear/empty as indicated.'
+  (tal-to-col ?card - card ?oldcard - card ?newcard - card ?cardabove - card): Move block {card} from being on block {oldcard} to being on block {newcard}, while {card} remains under the block above {card} ({cardabove}). Requires that block {newcard} is clear, {card} is on {oldcard}, there is a block above {card}, {card} is talon-playable, and {card} can be stacked on {newcard}. After the action, {card} becomes clear and faceup, {oldcard} becomes talon-playable, {card} sits on {newcard}, the relation between {cardabove} and {oldcard} is established, {newcard} is no longer clear, and {card} and the relation above {card} are updated accordingly.
+  (tal-to-col-b ?card - card ?newcard - card ?cardabove - card): Move block {card} from its talon to sit on block {newcard}, where block {newcard} sits on block {cardabove}. Requires that block {newcard} is clear, block {cardabove} is on the talon of block {card}, block {card} is talon-playable and at the bottom of its talon, and block {card} can stack on block {newcard}. Afterward, block {card} is clear and faceup, sits on block {newcard}, the bottom talon and talon-playable status of block {cardabove} are true while those of block {card} become false, block {newcard} is not clear, and the relation ontalon({cardabove}, {card}) is removed.
+  (tal-to-col-c ?card - card ?newcard - card ?oldcard - card): Move the top card {card} from the talon to sit on block {newcard}. Requires that block {newcard} is clear, {card} is on {oldcard} in the talon, {card} can be stacked on {newcard}, {card} is talon-playable, and {card} is the top talon card. After the move, block {card} becomes clear and faceup, is on {newcard}, and the top-talon status and playability for {oldcard} are restored; {newcard} becomes not clear, and {card} becomes not talon-playable and not on {oldcard}.
+  (tal-to-col-d ?card - card ?newcard - card): Move block {b1} from the talon to sit on block {b2} (on top of {b2}). Requires that block {b2} is clear, block {b1} can be stacked on block {b2}, and block {b1} is currently at the talon and movable. Afterward, {b1} is on {b2}, faceup and clear; {b2} is no longer clear; and block {b1} is no longer bottom/top talon or talon playable.
+  (tal-to-col-e ?card - card ?oldcard - card ?cardabove - card ?cols - colnum ?ncols - colnum): 'Move the king card {card} from the talon (on {oldcard} and with {cardabove} on top) to rest in column {cols} beneath {cardabove}, turning {card} face up and making {card} no longer talon-playable. Requires that {card} is a king on {oldcard}, {cardabove} is on {card}, and there is space in {cols} for the new position, with {cols} having a valid successor {ncols}. Effects: {card} becomes bottom of the column and no longer on the talon or on {oldcard}, {oldcard} becomes talon-playable, and {cardabove} is no longer on {card} or on {oldcard}.'
+  (tal-to-col-f ?card - card ?cardabove - card ?cols - colnum ?ncols - colnum): Move the king card {card} from the talon to column {cols} at position {ncols}. Requires that {card} is a king, {cardabove} is directly on top of {card} on the talon, {card} is on the bottom talon and talon-playable, and there is space in column {cols} with a valid successor at {ncols}. After the move, {card} becomes clear and faceup, is placed as the bottom card of column {cols} at {ncols}, and {cardabove} becomes the bottom talon and talon-playable; the linkage between {cardabove} and {card} is removed and {card} is no longer on the talon or playable.
+  (tal-to-col-g ?card - card ?oldcard - card ?cols - colnum ?ncols - colnum): Move the king block {card} from the talon onto column {cols} (the successor column {ncols} must exist and have space). Requires that {card} is a king, is on {oldcard} in the talon, the talon top is {card}, and column {cols} has space while {ncols} is the successor of {cols}. After the move, {card} becomes the bottom of column {cols} and is no longer top talon or playable; {oldcard} becomes the new top talon and playable; {cols} loses space while {ncols} gains space.
+  (tal-to-col-h ?card - card ?cols - colnum ?ncols - colnum): Move the king card {card} from the talon to the next column after {cols}, namely column {ncols}. Requires that {card} is a king at the bottom and top talon, that column {cols} has space and {ncols} is its successor, and that {card} is talon-playable. After the move, {card} is cleared and face up, placed as the bottom card of column {ncols}, column {ncols} gains space while column {cols} loses space, and {card} is no longer a top or bottom talon nor talon-playable.
+  ? (tal-to-home ?card - card ?cardabove - card ?cardbelow - card ?homecard - card ?cardsuit - suittype ?vcard - num ?vhomecard - num)
+  : 'Tal-to-home moves the talon card {card} (card {card} with value {vcard} and suit {cardsuit}) that sits on {cardabove} and above {cardbelow} to become the home card on {homecard} of suit {cardsuit}, where {vcard} is immediately before {vhomecard}. Requires {card} is talon-playable, {cardabove} is on {card}, {card} is on {cardbelow}, {homecard} is a home card of the same suit, and {vcard} and {vhomecard} are consecutive with {vcard} preceding {vhomecard}. Effects: {card} becomes the home card on {homecard}, {homecard} ceases to be the home card, {card} is no longer talon-playable, and {cardbelow} becomes talon-playable with {cardabove} moved onto {cardbelow}.'
+  (tal-to-home-b ?card - card ?cardabove - card ?homecard - card ?cardsuit - suittype ?vcard - num ?vhomecard - num): 'Move the card {card} from the talon above {cardabove} to the home pile {homecard}, requiring that {card} is on {cardabove}, {cardabove} is at the bottom of the talon, and both cards share the same suit with consecutive values ({vcard} immediately before {vhomecard}). Requires that {card} and {homecard} have the same suit, {card} is value {vcard}, {homecard} is value {vhomecard}, and {vcard} is the successor of {vhomecard}.
+
+
+    After the move, {cardabove} becomes the bottom talon and talon is playable there, {card} is placed in home, and {homecard} is no longer in home, while {card} is no longer on the talon.'
+  (tal-to-home-c ?card - card ?cardbelow - card ?homecard - card ?cardsuit - suittype ?vcard - num ?vhomecard - num): 'Move the top talon card {card} (on {cardbelow} in the talon) to the home area as {homecard} of suit {cardsuit}. Preconditions: {card} is on {cardbelow} in the talon, {card} is talon-playable and the top talon, and {homecard} exists in home with the same suit and value such that value({card}) is the successor of value({homecard}). Effects: {card} becomes home, {homecard} is removed from home, {card} is no longer on the talon and is not the top talon, while {cardbelow} becomes the new top talon and talon-playable, and {card} loses its top-talon status.'
+  (tal-to-home-d ?card - card ?homecard - card ?cardsuit - suittype ?vcard - num ?vhomecard - num): 'Move {card} (card {card}) from the talon to the home pile of {homecard} (same suit {cardsuit}, values {vcard} and {vhomecard} with successor({vcard},{vhomecard})). Preconditions: {card} is bottom talon, top talon, and talonplayable; {homecard} is in the home; {card} and {homecard} share suit {cardsuit} and have values {vcard} and {vhomecard}. Effects: home({card}) becomes true; home({homecard}) becomes false; toptalon({card}) becomes false; talonplayable({card}) becomes false; bottomtalon({card}) becomes false.'
+  (home-to-col ?card - card ?cardbelow - card ?newcard - card ?cardsuit - suittype ?vcard - num ?vcardbelow - num): 'Move card {card} from the home area to be on top of {newcard}, provided {card} and {cardbelow} share suit {cardsuit} and the value of {card} is the successor of the value of {cardbelow}, and {card} can be stacked on {newcard} with {newcard} currently clear. Requires that {card} is in home, {card} and {cardbelow} have suit {cardsuit}, value({card}) succeeds value({cardbelow}), {card} can stack on {newcard}, and {newcard} is clear. Effects: {card} becomes clear and faceup and moves out of home; {cardbelow} is moved to home; {newcard} becomes not clear; on({card}, {newcard}) becomes true.'
+  ? (home-to-col-a ?card - card ?cardbelow - card ?cardsuit - suittype ?vcard - num ?vcardbelow - num ?cols - colnum ?ncols - colnum)
+  : Move block {card} from the home area to the column after block {cardbelow} in suit {cardsuit}; {card} becomes the bottom card of its new column and is turned faceup, while {cardbelow} is moved back to the home area. Requires that {card} is in home and is a king, both {card} and {cardbelow} share suit {cardsuit}, values satisfy successor({vcard}, {vcardbelow}) with value({vcard}) and value({vcardbelow}), and there exists a column space {cols} with a successor to {cols} leading to {ncols}. After the move, {cardbelow} is at home, {card} is at the bottom of its column, and {card} is clear and faceup; column space {ncols} becomes true, {cols} becomes false, and {card} is no longer at home.
+  (turn-deck ?card - card ?c1 - card): Turn the card {card} from the talon to {c1}. Requires that {card} is talon-playable and {c1} is on the talon with {card}. Causes {c1} to become talon-playable and {card} to become not talon-playable.
+  (turn-deck-a ?card - card ?c1 - card): Turn the top talon card {card} so that {c1} becomes the playable card. Requires that {card} is talonplayable and at the top of the talon, and {c1} is at the bottom of the talon. Afterward, {c1} is talonplayable, and {card} is no longer talonplayable.
+Problems:
+  easy:
+  - p01.pddl
+  - p02.pddl
+  - p03.pddl
+  - p04.pddl
+  - p05.pddl
+  - p06.pddl
+  - p07.pddl
+  - p08.pddl
+  - p09.pddl
+  - p10.pddl
+  medium:
+  - p11.pddl
+  - p13.pddl
+  - p14.pddl
+  - p16.pddl
+  - p17.pddl
+  - p18.pddl
+  - p19.pddl
+  - p20.pddl
+  - p28.pddl
+  - p29.pddl
+  hard:
+  - p12.pddl
+  - p15.pddl
+  - p21.pddl
+  - p22.pddl
+  - p23.pddl
+  - p24.pddl
+  - p25.pddl
+  - p26.pddl
+  - p27.pddl
+  - p30.pddl

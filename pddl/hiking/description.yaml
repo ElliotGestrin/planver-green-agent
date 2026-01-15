@@ -1,0 +1,63 @@
+Types:
+- car
+- tent
+- person
+- couple
+- place
+Predicates:
+  (at_tent ?x1 - tent ?x2 - place): Tent {x} is at Place {y}
+  (at_person ?x1 - person ?x2 - place): Person {x} is at place {y}
+  (at_car ?x1 - car ?x2 - place): Car {x1} is at Place {x2}
+  (partners ?x1 - couple ?x2 - person ?x3 - person): Couple {x1} partners Person {x2} and Person {x3}
+  (up ?x1 - tent): Tent {x1} is up
+  (down ?x1 - tent): Tent {x1} is down
+  (walked ?x1 - couple ?x2 - place): Couple {x1} walked to Place {x2}
+  (next ?x1 - place ?x2 - place): Place {x} is next to Place {y}
+Actions:
+  (put_down ?x1 - person ?x2 - place ?x3 - tent): Put down tent {x3} by person {x1} at place {x2}. Requires that person {x1} is at place {x2}, tent {x3} is at place {x2}, and tent {x3} is up. Causes tent {x3} to be down and tent {x3} no longer up.
+  (put_up ?x1 - person ?x2 - place ?x3 - tent): Put up tent {x3} by person {x1} at place {x2}. Requires that person {x1} is at {x2}, tent {x3} is at {x2}, and tent {x3} is down. Causes tent {x3} to be up and no longer down.
+  (drive_passenger ?x1 - person ?x2 - place ?x3 - place ?x4 - car ?x5 - person): Drive passenger {p1} from place {p2} to place {p3} using car {p4}, with passenger {p5} also in {p4} and {p1} ≠ {p5}. Requires that {p1} is at {p2}, {p4} is at {p2}, and {p5} is at {p2}, with {p1} and {p5} being different people. After the action, {p1} is at {p3}, {p1} is no longer at {p2}, {p4} is at {p3} (car moved), {p4} is no longer at {p2}, and {p5} is at {p3} with {p5} no longer at {p2}.
+  (drive ?x1 - person ?x2 - place ?x3 - place ?x4 - car): 'Drive {p1} from {l2} to {l3} using {c1}. Preconditions: {p1} at {l2} and {c1} at {l2}. Effects: {p1} at {l3} true and {p1} at {l2} false; {c1} at {l3} true and {c1} at {l2} false.'
+  (drive_tent ?x1 - person ?x2 - place ?x3 - place ?x4 - car ?x5 - tent): 'Drive tent {t1} from place {l_from} to place {l_to} with person {p1} and car {c1}. Preconditions: {p1} is at {l_from}, {c1} is at {l_from}, tent {t1} is at {l_from}, and tent {t1} is down. Effects: {p1} is at {l_to}; {p1} is no longer at {l_from}; {c1} is at {l_to}; tent {t1} is at {l_to}; tent {t1} is no longer at {l_from}.'
+  (drive_tent_passenger ?x1 - person ?x2 - place ?x3 - place ?x4 - car ?x5 - tent ?x6 - person): 'Drive_tent_passenger moves the two passengers {b1} and {b6} from place {b2} to place {b3} using car {b4} and tent {b5}, with the tent in the down position.
+
+
+    Requires that {b1} is at {b2}, {b6} is at {b2}, {b4} is at {b2}, {b5} is at {b2}, and {b1} and {b6} are distinct.
+
+
+    Effects: {b1} is at {b3}, {b6} is at {b3}, {b4} is at {b3}, {b5} is at {b3}, and {b1} and {b6} are no longer at {b2}.'
+  (walk_together ?x1 - tent ?x2 - place ?x3 - person ?x4 - place ?x5 - person ?x6 - couple): 'Walk together with couple {b6} to move the two people {b3} and {b5} from place {b4} to the tent at {b2}. Preconditions: the tent {b1} is at place {b2} and is up; {b3} is at {b4}; {b5} is at {b4}; {b3} and {b5} are different; and {b6} has walked with {b4}. Effects: {b3} is at {b2} (and not at {b4}); {b5} is at {b2} (and not at {b4}); {b6} has walked to {b2} (and is not at {b4}).'
+Problems:
+  easy:
+  - p01.pddl
+  - p02.pddl
+  - p09.pddl
+  - p10.pddl
+  - p03.pddl
+  - p11.pddl
+  - p12.pddl
+  - p13.pddl
+  - p04.pddl
+  - p14.pddl
+  medium:
+  - p05.pddl
+  - p15.pddl
+  - p16.pddl
+  - p17.pddl
+  - p06.pddl
+  - p18.pddl
+  - p19.pddl
+  - p07.pddl
+  - p20.pddl
+  - p08.pddl
+  hard:
+  - p21.pddl
+  - p22.pddl
+  - p23.pddl
+  - p24.pddl
+  - p25.pddl
+  - p26.pddl
+  - p27.pddl
+  - p28.pddl
+  - p29.pddl
+  - p30.pddl

@@ -1,0 +1,51 @@
+Types:
+- thing
+- location
+- direction
+- player
+- stone
+Predicates:
+  (clear ?l - location): Location {l} is clear
+  (at ?t - thing ?l - location): Thing {t} is at Location {l}
+  (at-goal ?s - stone): Stone {s} is at the goal
+  (is-goal ?l - location): Location {l} is a goal
+  (is-nongoal ?l - location): Location {l} is not a goal
+  (move-dir ?from - location ?to - location ?dir - direction): Move from Location {from_loc} to Location {to_loc} in the {dir} direction
+Actions:
+  (move ?p - player ?from - location ?to - location ?dir - direction): Move the player {p} from location {from} to location {to} in direction {dir}. Requires that {p} is at {from}, {to} is clear, and move-dir({from}, {to}, {dir}) holds. After the move, {p} is at {to}, {from} becomes clear, and {to} is no longer clear.
+  (push-to-nongoal ?p - player ?s - stone ?ppos - location ?from - location ?to - location ?dir - direction): 'Push-to-nongoal: move stone {s} by player {p} from location {from} to location {to} in direction {dir}, starting from {ppos}. Requires that {p} is at {ppos}, {s} is at {from}, {to} is clear, the move from {ppos} to {from} and from {from} to {to} follows direction {dir}, and {to} is a non-goal location. Causes {p} to leave {ppos} and occupy {from}, {s} to leave {from} and occupy {to}, {to} to become not clear, {ppos} to become clear, and {s} to not be at the goal.'
+  (push-to-goal ?p - player ?s - stone ?ppos - location ?from - location ?to - location ?dir - direction): Push to goal {p} the stone {s} from location {from} to location {to} in direction {dir}. Requires that player {p} is at {ppos}, stone {s} is at {from}, {to} is clear, and movement from {ppos} to {from} and from {from} to {to} follows direction {dir}, with {to} being a goal. After the action, player {p} is at {from} (no longer at {ppos}), stone {s} is at {to} (no longer at {from}), {to} is not clear, {ppos} becomes clear, and stone {s} is at-goal.
+Problems:
+  easy:
+  - p06.pddl
+  - p08.pddl
+  - p13.pddl
+  - p15.pddl
+  - p02.pddl
+  - p01.pddl
+  - p21.pddl
+  - p23.pddl
+  - p22.pddl
+  - p04.pddl
+  medium:
+  - p10.pddl
+  - p14.pddl
+  - p05.pddl
+  - p26.pddl
+  - p18.pddl
+  - p12.pddl
+  - p27.pddl
+  - p17.pddl
+  - p09.pddl
+  - p25.pddl
+  hard:
+  - p03.pddl
+  - p07.pddl
+  - p29.pddl
+  - p28.pddl
+  - p19.pddl
+  - p24.pddl
+  - p20.pddl
+  - p11.pddl
+  - p30.pddl
+  - p16.pddl

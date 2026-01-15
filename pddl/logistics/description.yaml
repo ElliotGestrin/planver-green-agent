@@ -1,0 +1,53 @@
+Types:
+- object
+Predicates:
+  (obj ?obj - object): Object {obj} is an object.
+  (truck ?truck - object): Truck {truck} is a truck
+  (location ?loc - object): Object {loc} is a location
+  (airplane ?airplane - object): Airplane {airplane} is an airplane.
+  (city ?city - object): Object {city} is a city
+  (airport ?airport - object): Object {airport} is an airport
+  (at ?obj - object ?loc - object): Object {obj} is at Object {loc}
+  (in ?obj1 - object ?obj2 - object): Object {x} is in object {y}
+  (in-city ?obj - object ?city - object): Object {obj} is in city {city}
+Actions:
+  (load-truck ?obj - object ?truck - object ?loc - object): Load block {b1} from location {l1} into truck {t1}. Requires that block {b1} is a block, truck {t1} is a truck, location {l1} is a location, the truck {t1} is at {l1}, and the block {b1} is at {l1}. After execution, block {b1} is in truck {t1} and no longer at {l1}.
+  (load-airplane ?obj - object ?airplane - object ?loc - object): 'Load object {obj} from location {loc} into airplane {airplane}. Preconditions: {obj} is an object at {loc} and {airplane} is an airplane at {loc}. Effects: {obj} is no longer at {loc} and {obj} is in {airplane}.'
+  (unload-truck ?obj - object ?truck - object ?loc - object): Unload object {obj} from truck {truck} at location {loc}. Requires that {obj} is an object, {truck} is an object, {loc} is a location, {truck} is at {loc}, and {obj} is in {truck}. After execution, {obj} is no longer in {truck}, and {obj} is at {loc}.
+  (unload-airplane ?obj - object ?airplane - object ?loc - object): Unload object {obj} from airplane {airplane} at location {loc}. Requires that {obj} is an object, {airplane} is an object, and {loc} is a location, and that {obj} is in {airplane} and {airplane} is at {loc}. Causes {obj} to no longer be in {airplane} and {obj} to be at {loc}.
+  (drive-truck ?truck - object ?loc-from - object ?loc-to - object ?city - object): Drive truck {truck} from location {loc-from} to location {loc-to} in city {city}. Requires that truck {truck} is at {loc-from}, and that both {loc-from} and {loc-to} are in city {city}. After the action, {truck} is no longer at {loc-from} and is now at {loc-to}.
+  (fly-airplane ?airplane - object ?loc-from - object ?loc-to - object): Fly airplane {airplane} from airport {loc-from} to airport {loc-to}. Requires that {airplane} is an airplane, {loc-from} is an airport, {loc-to} is an airport, and at({airplane}, {loc-from}). Causes at({airplane}, {loc-from}) to become false and at({airplane}, {loc-to}) to become true.
+Problems:
+  easy:
+  - p10.pddl
+  - p01.pddl
+  - p11.pddl
+  - p02.pddl
+  - p24.pddl
+  - p12.pddl
+  - p03.pddl
+  - p17.pddl
+  - p25.pddl
+  - p18.pddl
+  medium:
+  - p13.pddl
+  - p04.pddl
+  - p26.pddl
+  - p14.pddl
+  - p05.pddl
+  - p27.pddl
+  - p19.pddl
+  - p06.pddl
+  - p07.pddl
+  - p28.pddl
+  hard:
+  - p15.pddl
+  - p20.pddl
+  - p08.pddl
+  - p16.pddl
+  - p29.pddl
+  - p09.pddl
+  - p30.pddl
+  - p21.pddl
+  - p22.pddl
+  - p23.pddl

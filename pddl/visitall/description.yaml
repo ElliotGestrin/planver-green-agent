@@ -1,0 +1,42 @@
+Types:
+- place
+Predicates:
+  (connected ?x - place ?y - place): Place {x} is connected to Place {y}
+  (at-robot ?x - place): The robot is at Place {x}
+  (visited ?x - place): Place {x} has been visited
+Actions:
+  (move ?curpos - place ?nextpos - place): Move the robot from place {curpos} to place {nextpos}. Requires that place {curpos} is the robot’s current location and that place {curpos} is connected to place {nextpos}. After execution, the robot is at place {nextpos}, place {curpos} is no longer the robot’s location, and place {nextpos} is marked as visited.
+Problems:
+  easy:
+  - p01.pddl
+  - p02.pddl
+  - p03.pddl
+  - p04.pddl
+  - p05.pddl
+  - p06.pddl
+  - p21.pddl
+  - p07.pddl
+  - p22.pddl
+  - p08.pddl
+  medium:
+  - p23.pddl
+  - p09.pddl
+  - p24.pddl
+  - p25.pddl
+  - p10.pddl
+  - p26.pddl
+  - p11.pddl
+  - p27.pddl
+  - p12.pddl
+  - p28.pddl
+  hard:
+  - p13.pddl
+  - p29.pddl
+  - p14.pddl
+  - p30.pddl
+  - p15.pddl
+  - p16.pddl
+  - p17.pddl
+  - p18.pddl
+  - p19.pddl
+  - p20.pddl

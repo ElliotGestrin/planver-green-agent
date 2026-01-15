@@ -1,0 +1,57 @@
+Types:
+- robot
+- tile
+- color
+Predicates:
+  (robot-at ?r - robot ?x - tile): Robot {r} is at Tile {x}
+  (up ?x - tile ?y - tile): Tile {x} is up from tile {y}
+  (down ?x - tile ?y - tile): Tile {x} is below tile {y}
+  (right ?x - tile ?y - tile): Tile {x} is to the right of Tile {y}
+  (left ?x - tile ?y - tile): Tile {x} is to the left of Tile {y}
+  (clear ?x - tile): Tile {x} is clear
+  (painted ?x - tile ?c - color): Tile {x} is painted {c}
+  (robot-has ?r - robot ?c - color): Robot {r} has color {c}
+  (available-color ?c - color): Color {c} is available
+  (free-color ?r - robot): Robot {r} has a free color
+Actions:
+  (change-color ?r - robot ?c - color ?c2 - color): Change the color of robot {r} from {c} to {c2}. Requires that robot {r} has color {c} and that color {c2} is available. After the action, robot {r} no longer has color {c} and now has color {c2}.
+  (paint-up ?r - robot ?y - tile ?x - tile ?c - color): Paint tile {y} with color {c} using robot {r} at location {x}. Requires that robot {r} has color {c}, is at {x}, {y} is above {x}, and {y} is clear. After painting, {y} is no longer clear and {y} is marked painted with color {c}.
+  (paint-down ?r - robot ?y - tile ?x - tile ?c - color): Paints tile {y} with color {c} using robot {r} located at tile {x} (tile {y} is down from tile {x}). Requires that robot {r} has color {c}, robot {r} is at {x}, tile {y} is down from {x}, and tile {y} is clear. Afterward, tile {y} is no longer clear and is painted {c}.
+  (move-up ?r - robot ?x - tile ?y - tile): Move up the robot {r} from tile {x} to tile {y}. Requires that robot {r} is at tile {x}, tile {y} is above tile {x}, and tile {y} is clear. After the move, robot {r} is at tile {y}, robot {r} is no longer at tile {x}, tile {x} becomes clear, and tile {y} becomes not clear.
+  (move-down ?r - robot ?x - tile ?y - tile): Move-down the robot {r} from tile {x} to tile {y}, where {r} is a robot on {x}, {y} is below {x}, and {y} is clear. After execution, {r} is on {y} and no longer on {x}; {x} becomes clear and {y} becomes not clear.
+  (move-right ?r - robot ?x - tile ?y - tile): Move robot {r} from tile {x} to the tile on its right, {y}. Requires that robot {r} is at {x}, tile {y} is to the right of {x}, and tile {y} is clear. After the move, robot {r} is at {y}, {x} is no longer occupied and becomes clear, and {y} becomes not clear.
+  (move-left ?r - robot ?x - tile ?y - tile): Move the robot {r} from tile {x} to tile {y} (to the left of {x}). Requires that {r} is at {x}, {y} is left of {x}, and tile {y} is clear. After the move, {r} is at {y}, {r} is no longer at {x}, tile {x} becomes clear, and tile {y} becomes not clear.
+Problems:
+  easy:
+  - p01.pddl
+  - p02.pddl
+  - p04.pddl
+  - p03.pddl
+  - p05.pddl
+  - p06.pddl
+  - p07.pddl
+  - p08.pddl
+  - p09.pddl
+  - p10.pddl
+  medium:
+  - p11.pddl
+  - p12.pddl
+  - p13.pddl
+  - p14.pddl
+  - p15.pddl
+  - p16.pddl
+  - p17.pddl
+  - p18.pddl
+  - p20.pddl
+  - p21.pddl
+  hard:
+  - p19.pddl
+  - p22.pddl
+  - p23.pddl
+  - p24.pddl
+  - p25.pddl
+  - p27.pddl
+  - p26.pddl
+  - p28.pddl
+  - p29.pddl
+  - p30.pddl

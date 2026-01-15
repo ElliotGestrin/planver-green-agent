@@ -1,0 +1,51 @@
+Types:
+- location
+- fuellevel
+- locatable
+- package
+- truck
+Predicates:
+  (connected ?l1 - location ?l2 - location): Location {l1} is connected to Location {l2}
+  (at ?o - locatable ?l - location): Locatable {o} is at location {l}
+  (in ?p - package ?t - truck): Package {p} is in Truck {t}
+  (fuel ?t - truck ?level - fuellevel): Truck {t} has fuel level {level}
+  (fuelcost ?level - fuellevel ?l1 - location ?l2 - location): Fuellevel {level} from location {l1} to location {l2}
+  (sum ?a - fuellevel ?b - fuellevel ?c - fuellevel): Fuel level {a} plus fuel level {b} equals fuel level {c}
+Actions:
+  (load ?p - package ?t - truck ?l - location): Load package {p} into truck {t} from location {l} (package {p}, truck {t}, location {l}). Requires that {p} is at {l} and {t} is at {l} (package {p}, truck {t}, location {l}). Causes {p} to no longer be at {l} and to be in {t}.
+  (unload ?p - package ?t - truck ?l - location): Unload package {p} from truck {t} to location {l}. Requires that truck {t} is at location {l} and package {p} is in truck {t}. Causes package {p} to be at location {l} and no longer in truck {t}.
+  (drive ?t - truck ?l1 - location ?l2 - location ?fuelpost - fuellevel ?fueldelta - fuellevel ?fuelpre - fuellevel): Drive truck {t} from location {l1} to location {l2}. Requires that {l1} and {l2} are connected, fuel cost from {l1} to {l2} is {fueldelta}, the truck {t} is at {l1}, and fuel at {t} is {fuelpre} with {fuelpre} plus {fueldelta} equaling {fuelpost}. After the action, {t} is at {l2} (no longer at {l1}), and the truck’s fuel changes from {fuelpre} to {fuelpost}.
+Problems:
+  easy:
+  - p06.pddl
+  - p01.pddl
+  - p11.pddl
+  - p03.pddl
+  - p02.pddl
+  - p05.pddl
+  - p04.pddl
+  - p10.pddl
+  - p07.pddl
+  - p09.pddl
+  medium:
+  - p08.pddl
+  - p15.pddl
+  - p20.pddl
+  - p14.pddl
+  - p16.pddl
+  - p18.pddl
+  - p12.pddl
+  - p17.pddl
+  - p21.pddl
+  - p29.pddl
+  hard:
+  - p13.pddl
+  - p26.pddl
+  - p19.pddl
+  - p24.pddl
+  - p22.pddl
+  - p30.pddl
+  - p25.pddl
+  - p23.pddl
+  - p27.pddl
+  - p28.pddl
