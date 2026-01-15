@@ -28,3 +28,9 @@ test = [
 
 [tool.uv.sources]
 pddlval = { git = "https://github.com/ElliotGestrin/pddlval.git" }
+
+[tool.pytest.ini_options]
+markers = [
+    "integration: marks tests as integration tests requiring running servers",
+]
+addopts = "-m 'not integration'"  # Skip integration tests by default

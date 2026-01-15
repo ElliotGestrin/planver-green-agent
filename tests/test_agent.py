@@ -7,6 +7,10 @@ from a2a.client import A2ACardResolver, ClientConfig, ClientFactory
 from a2a.types import Message, Part, Role, TextPart
 
 
+# Mark integration tests that require running servers
+pytestmark_integration = pytest.mark.integration
+
+
 # A2A validation helpers - adapted from https://github.com/a2aproject/a2a-inspector/blob/main/backend/validators.py
 
 def validate_agent_card(card_data: dict[str, Any]) -> list[str]:
@@ -160,6 +164,7 @@ async def send_text_message(text: str, url: str, context_id: str | None = None, 
 
 # A2A conformance tests
 
+@pytest.mark.integration
 def test_agent_card(agent):
     """Validate agent card structure and required fields."""
     response = httpx.get(f"{agent}/.well-known/agent-card.json")
@@ -170,6 +175,7 @@ def test_agent_card(agent):
 
     assert not errors, f"Agent card validation failed:\n" + "\n".join(errors)
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 @pytest.mark.parametrize("streaming", [True, False])
 async def test_message(agent, streaming):
@@ -198,6 +204,7 @@ async def test_message(agent, streaming):
 
 # PDDL Planner Evaluator Agent Tests
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_agent_card_has_correct_skill(agent):
     """Verify agent card contains the PDDL planner evaluation skill."""
@@ -213,6 +220,7 @@ async def test_agent_card_has_correct_skill(agent):
     assert 'planning' in [tag.lower() for tag in skill.get('tags', [])]
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_invalid_request_missing_roles(agent):
     """Test that agent rejects requests missing required participant roles."""
@@ -241,6 +249,7 @@ async def test_invalid_request_missing_roles(agent):
     assert has_rejection, "Agent should reject requests missing required roles"
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_invalid_request_missing_config(agent):
     """Test that agent rejects requests missing required config keys."""
@@ -268,6 +277,7 @@ async def test_invalid_request_missing_config(agent):
     assert has_rejection, "Agent should reject requests missing required config keys"
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_invalid_difficulty_count_out_of_range(agent):
     """Test that agent rejects difficulty counts outside 0-10 range."""
@@ -297,6 +307,7 @@ async def test_invalid_difficulty_count_out_of_range(agent):
     assert has_rejection, "Agent should reject difficulty counts outside 0-10 range"
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_valid_request_single_domain(agent):
     """Test that agent accepts valid requests with single domain."""
@@ -334,6 +345,7 @@ async def test_valid_request_single_domain(agent):
     # not reject the request format
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_valid_request_multiple_domains(agent):
     """Test that agent accepts requests with multiple domains."""

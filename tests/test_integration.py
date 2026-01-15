@@ -8,7 +8,7 @@ These tests require both servers to be running:
 To run these tests:
     Terminal 1: uv run src/server.py
     Terminal 2: cd tests/mock_planner && uv run server.py
-    Terminal 3: uv run pytest tests/test_integration.py -v -s
+    Terminal 3: uv run pytest tests/test_integration.py --run-integration -v -s
 """
 
 import json
@@ -18,6 +18,9 @@ from uuid import uuid4
 
 from a2a.client import A2ACardResolver, ClientConfig, ClientFactory
 from a2a.types import Message, Part, Role, TextPart
+
+# Mark all tests in this file as integration tests
+pytestmark = pytest.mark.integration
 
 
 EVALUATOR_URL = "http://localhost:9009"
@@ -57,7 +60,7 @@ async def test_servers_are_running():
             resp = await client.get(f"{EVALUATOR_URL}/.well-known/agent-card.json")
             assert resp.status_code == 200
             evaluator_card = resp.json()
-            assert evaluator_card["name"] == "PDDL Planner Evaluator"
+            assert evaluator_card["name"] == "PlanVer Green Agent"
             print(f"✓ Evaluator agent running at {EVALUATOR_URL}")
         except httpx.ConnectError:
             pytest.fail(
