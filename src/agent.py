@@ -193,11 +193,7 @@ class Agent:
                     continue
 
                 problems = describer.get_problems_by_difficulty(difficulty)
-                # Sample problems (with replacement if needed)
                 sampled = problems[:count]
-                if len(sampled) < count:
-                    # Sample with replacement if not enough problems
-                    sampled += random.choices(problems, k=count - len(sampled))
 
                 for problem_file in sampled:
                     result = await self.test_single_task(

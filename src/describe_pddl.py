@@ -490,7 +490,7 @@ Example format:
         
         # Task description
         lines.append("Generate a plan for this task. Provide one action instruction per line.")
-        lines.append("Format each action as: action_name arg1 arg2 ...")
+        lines.append("Format each action as: (action_name arg1 arg2 ...)")
         lines.append("")
         
         # Actions section
@@ -542,6 +542,8 @@ Example format:
                 nl_desc = self._parse_goal_to_nl(goal)
                 if nl_desc:
                     lines.append(f"- {nl_desc}")
+
+        lines.append("Reply only with the plan, no additional text.")
         
         return "\n".join(lines)
     

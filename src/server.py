@@ -34,7 +34,7 @@ def main():
     )
 
     agent_card = AgentCard(
-        name="PDDL Planner Evaluator",
+        name="PlanVer Green Agent",
         description="A green agent that evaluates PDDL planning capabilities. "
                     "It generates natural language planning tasks from PDDL domains, "
                     "sends them to a planner agent, and validates the returned plans. "
