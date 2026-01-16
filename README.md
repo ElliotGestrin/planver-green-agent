@@ -13,9 +13,14 @@ Each domain then has the problems sorted into three difficulty levels (easy, med
 
 ## Adding New Domains
 To add a new domain to PlanVer, follow these steps:
-- Create a new directory under `domains/` with the name of the domain (e.g., `blocks_world`).
+- Create a new directory under `domains/` with the name of the domain (e.g., `mydomain`).
 - Add the PDDL domain and 30 problem files in this directory. 
 - Run the description generation script to create natural language descriptions of the domain and problems:
   ```bash
   uv run generate_all_descriptions.py
   ```
+
+Once this is done, create a pull request and the new domain will be added to the AgentBeats published green agent. 
+  
+## Contact & Questions
+If you've got any questions, don't hesitate to write us at `elliot.gestrin@liu.se`. 
