@@ -260,7 +260,7 @@ requires-dist = [
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "httpx", marker = "extra == 'test'", specifier = ">=0.28.1" },
     { name = "openai", specifier = ">=2.15.0" },
-    { name = "pddlval", git = "https://github.com/ElliotGestrin/pddlval.git" },
+    { name = "pddlval", git = "https://github.com/ElliotGestrin/pddlval.git?branch=main" },
     { name = "pydantic", specifier = ">=2.12.5" },
     { name = "pytest", specifier = ">=9.0.2" },
     { name = "pytest", marker = "extra == 'test'", specifier = ">=8.0.0" },
@@ -485,8 +485,8 @@ wheels = [
 
 [[package]]
 name = "pddlval"
-version = "0.1.0"
-source = { git = "https://github.com/ElliotGestrin/pddlval.git#fb645b2be206badb6bc4affde2ad4537353d70c9" }
+version = "0.2.0"
+source = { git = "https://github.com/ElliotGestrin/pddlval.git?branch=main#3d03f7cf4df6793257d15231b360e7aafbf04c24" }
 
 [[package]]
 name = "pluggy"

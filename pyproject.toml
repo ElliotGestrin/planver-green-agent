@@ -9,7 +9,7 @@ dependencies = [
     "dotenv>=0.9.9",
     "httpx>=0.28.1",
     "openai>=2.15.0",
-    "pddlval",
+    "pddlval>=0.2.0",
     "pydantic>=2.12.5",
     "pytest>=9.0.2",
     "pytest-asyncio>=0.24.0",
@@ -27,7 +27,7 @@ test = [
 ]
 
 [tool.uv.sources]
-pddlval = { git = "https://github.com/ElliotGestrin/pddlval.git" }
+pddlval = { git = "https://github.com/ElliotGestrin/pddlval.git", branch = "main" }
 
 [tool.pytest.ini_options]
 markers = [
